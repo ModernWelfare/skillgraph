@@ -1,0 +1,7 @@
+0,0,Item1,Skill1
+1,0,Item2,Skill1
+2,1,Item3,Skill2
+3,2,Item4,Skill3
+4,3,Item5,Skill4
+5,4,Item6,Skill5
+6,4,Item7,Skill5
