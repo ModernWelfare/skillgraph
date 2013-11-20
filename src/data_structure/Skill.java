@@ -85,6 +85,11 @@ public class Skill extends Node implements Comparable<Skill> {
 		return children.get(childIndex);
 	}
 
+	public boolean hasChild(Skill childSkill)
+	{
+		return children.contains(childSkill);
+	}
+
 	public void addChild(Skill childSkill)
 	{
 		// considering this (add when aldready there) an error for not, may
@@ -173,6 +178,11 @@ public class Skill extends Node implements Comparable<Skill> {
 
 	public Skill getParent(int parentIndex) {
 		return parents.get(parentIndex);
+	}
+
+	public boolean hasParent(Skill parentSkill)
+	{
+		return parents.contains(parentSkill);
 	}
 
 	public void addParent(Skill parentSkill)
@@ -264,6 +274,11 @@ public class Skill extends Node implements Comparable<Skill> {
 
 	public Item getItem(int itemIndex) {
 		return items.get(itemIndex);
+	}
+
+	public boolean hasItem(Item item)
+	{
+		return items.contains(item);
 	}
 
 	// assumed an item can have only 1 parent
