@@ -4,6 +4,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import util.RandomGraphGenerator;
+
 public class DataStructureMasterTests {
 	@Test
 	public void testGraphCreationNoError() {
@@ -38,6 +40,12 @@ public class DataStructureMasterTests {
 				"Example/GuessAndSlipRanges1.txt");
 		graph.mergeSkills(2, 3);
 		System.out.println(graph);
+		assertTrue(true);
+	}
+
+	@Test
+	public void testRandomGraphGeneration() {
+		RandomGraphGenerator.generateRandomGraph(50, 70, 3, 5, 5, 9);
 		assertTrue(true);
 	}
 }
