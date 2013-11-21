@@ -49,6 +49,8 @@ public class RandomGraphGenerator {
 
 		sMatrix.makeRandomMatrixWithNoCycle(levelNum);
 
+		sMatrix.outPutToFile("1");
+
 	}
 
 }

@@ -1,5 +1,9 @@
 package data_structure;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -174,6 +178,9 @@ public class SkillMatrix {
 				}
 			}
 		}
+	}
+
+	public void outPutToFile(String folderName) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < width; j++) {
@@ -182,9 +189,21 @@ public class SkillMatrix {
 			sb.append("\n");
 		}
 
-		System.out.println(sb.toString());
-		int abc = 0;
+		String path = folderName + "/skillGraph.csv";
 
+		File dir = new File(folderName);
+
+		if (!dir.exists()) {
+			dir.mkdir();
+		}
+
+		try {
+			PrintWriter writer = new PrintWriter(path, "UTF-8");
+			writer.write(sb.toString());
+			writer.close();
+		} catch (FileNotFoundException | UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void addArc(int parentIndex, int childIndex) {
