@@ -63,7 +63,8 @@ public class SkillGraph {
 
 	}
 
-	public SkillGraph(SkillGraph otherSkillGraph) {
+	public SkillGraph(SkillGraph otherSkillGraph)
+	{
 		skillList = new ArrayList<Skill>();
 		itemList = new ArrayList<Item>();
 		guessList = new ArrayList<Guess>();
@@ -74,34 +75,96 @@ public class SkillGraph {
 		List<Guess> otherGuessList = otherSkillGraph.getGuessList();
 		List<Slip> otherSlipList = otherSkillGraph.getSlipList();
 
-		CPTSkillTemplate otherCPTSkillTemplate = otherSkillGraph
-				.getCPTSkillTemplate();
-		CPTGuessSlipTemplate otherCPTGuessSlipTemplate = otherSkillGraph
-				.getCPTGuessSlipTemplate();
+		CPTSkillTemplate otherCPTSkillTemplate = otherSkillGraph.getCPTSkillTemplate();
+		CPTGuessSlipTemplate otherCPTGuessSlipTemplate = otherSkillGraph.getCPTGuessSlipTemplate();
 
-		for (int i = 0; i < otherSkillList.size(); i++) {
+
+		//this group of loops will create the new nodes, but not link them
+
+		for(int i=0; i<otherSkillList.size(); i++)
+		{
 			Skill skill = new Skill(otherSkillList.get(i));
 			skillList.add(skill);
 		}
 
-		for (int i = 0; i < otherItemList.size(); i++) {
+		for(int i=0; i<otherItemList.size(); i++)
+		{
 			Item item = new Item(otherItemList.get(i));
 			itemList.add(item);
 		}
 
-		for (int i = 0; i < otherGuessList.size(); i++) {
+		for(int i=0; i<otherGuessList.size(); i++)
+		{
 			Guess guess = new Guess(otherGuessList.get(i));
 			guessList.add(guess);
 		}
 
-		for (int i = 0; i < otherSlipList.size(); i++) {
+		for(int i=0; i<otherSlipList.size(); i++)
+		{
 			Slip slip = new Slip(otherSlipList.get(i));
 			slipList.add(slip);
 		}
 
-		cptSkillTemplate = new CPTSkillTemplate(otherCPTSkillTemplate);
-		cptGuessSlipTemplate = new CPTGuessSlipTemplate(
-				otherCPTGuessSlipTemplate);
+
+		//must link all NEW nodes now
+
+		//links up all skills and items
+		for(int i=0; i<skillList.size(); i++)
+		{
+			Skill newSkill = skillList.get(i);
+			Skill oldSkill = otherSkillList.get(i);
+			
+			for(int j=0; j<oldSkill.getNumberOfParents(); j++)
+			{
+				Skill oldParent = oldSkill.getParent(j);
+				Skill newParent = skillList.get(oldParent.getIndex());
+				
+				if(!newSkill.hasParent(newParent))
+				{
+					newSkill.addParentAndParentChild(newParent);
+				}
+			}
+
+
+			for(int j=0; j<oldSkill.getNumberOfChildren(); j++)
+			{
+				Skill oldChild = oldSkill.getChild(j);
+				Skill newChild = skillList.get(oldChild.getIndex());
+				
+				if(!newSkill.hasChild(newChild))
+				{
+					newSkill.addChildAndChildParent(newChild);
+				}
+			}
+
+			for(int j=0; j<oldSkill.getNumberOfItems(); j++)
+			{
+				Item oldItem = oldSkill.getItem(j);
+				Item newItem = itemList.get(oldItem.getIndex());
+				
+				if(!newSkill.hasItem(newItem))
+				{
+					newSkill.addItem(newItem);
+				}
+			}
+		}
+
+
+		//links up guesses and slips
+		for(int i=0; i<itemList.size(); i++)
+		{
+			Item newItem = itemList.get(i);
+			Item oldItem = otherItemList.get(i);
+
+			int guessIndex = oldItem.getGuess().getIndex();
+			int slipIndex = oldItem.getSlip().getIndex();
+
+			newItem.setGuessAndGuessItem(guessList.get(guessIndex));
+			newItem.setSlipAndSlipItem(slipList.get(slipIndex));
+		}
+
+		cptSkillTemplate = new  CPTSkillTemplate(otherCPTSkillTemplate);
+		cptGuessSlipTemplate = new  CPTGuessSlipTemplate(otherCPTGuessSlipTemplate);
 	}
 
 	// Set and get functions

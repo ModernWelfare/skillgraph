@@ -19,7 +19,6 @@ public class Slip extends Node implements Comparable<Slip>
 	public Slip(Slip otherSlip)
 	{
 		super(otherSlip.getIndex(), otherSlip.getName());
-		item = new Item(otherSlip.getItem());
 		cptTable = new CPT(otherSlip.getCPTTable());
 	}
 
@@ -31,6 +30,12 @@ public class Slip extends Node implements Comparable<Slip>
 	public void setItem(Item im)
 	{
 		item = im;
+	}
+
+	public void setItemAndItemSlip(Item im)
+	{
+		item = im;
+		item.setSlip(this);
 	}
 
 	//output the cpt table in an easily readable form
@@ -98,27 +103,6 @@ public class Slip extends Node implements Comparable<Slip>
 				{
 					returnValue = true;
 				}
-				else
-				{
-					System.err.println("Two slip nodes have the same name and index but different cpt's");
-					System.err.println(name + " " + index);
-					System.err.println(otherSlip1.getName() + " " + otherSlip1.getIndex());
-					System.exit(-1);
-				}
-			}
-			else if(name.equals(otherSlip1.getName()) && index != otherSlip1.getIndex())
-			{
-				System.err.println("Two slip nodes have the same name but different indices");
-				System.err.println(name + " " + index);
-				System.err.println(otherSlip1.getName() + " " + otherSlip1.getIndex());
-				System.exit(-1);
-			}
-			else if(!name.equals(otherSlip1.getName()) && index == otherSlip1.getIndex())
-			{
-				System.err.println("Two slip nodes have different names but the same indices");
-				System.err.println(name + " " + index);
-				System.err.println(otherSlip1.getName() + " " + otherSlip1.getIndex());
-				System.exit(-1);
 			}
 		}
 

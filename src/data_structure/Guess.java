@@ -19,7 +19,7 @@ public class Guess extends Node implements Comparable<Guess>
 	public Guess(Guess otherGuess)
 	{
 		super(otherGuess.getIndex(), otherGuess.getName());
-		item = new Item(otherGuess.getItem());
+		//item = new Item(otherGuess.getItem());
 		cptTable = new CPT(otherGuess.getCPTTable());
 	}
 
@@ -31,6 +31,12 @@ public class Guess extends Node implements Comparable<Guess>
 	public void setItem(Item im)
 	{
 		item = im;
+	}
+
+	public void setItemAndItemGuess(Item im)
+	{
+		item = im;
+		item.setGuess(this);
 	}
 
 	//output the cpt table in an easily readable form
@@ -95,27 +101,6 @@ public class Guess extends Node implements Comparable<Guess>
 				{
 					returnValue = true;
 				}
-				else
-				{
-					System.err.println("Two guess nodes have the same name and index but different cpt's");
-					System.err.println(getName() + " " + getIndex());
-					System.err.println(otherGuess1.getName() + " " + otherGuess1.getIndex());
-					System.exit(-1);
-				}
-			}
-			else if(getName().equals(otherGuess1.getName()) && getIndex() != otherGuess1.getIndex())
-			{
-				System.err.println("Two guess nodes have the same name but different indices");
-				System.err.println(getName() + " " + getIndex());
-				System.err.println(otherGuess1.getName() + " " + otherGuess1.getIndex());
-				System.exit(-1);
-			}
-			else if(!getName().equals(otherGuess1.getName()) && getIndex() == otherGuess1.getIndex())
-			{
-				System.err.println("Two guess nodes have different names but the same indices");
-				System.err.println(getName() + " " + getIndex());
-				System.err.println(otherGuess1.getName() + " " + otherGuess1.getIndex());
-				System.exit(-1);
 			}
 		}
 

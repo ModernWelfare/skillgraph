@@ -71,6 +71,7 @@ public class CPTGuessSlipTemplate
 	public CPTGuessSlipTemplate(CPTGuessSlipTemplate oldTemplate)
 	{
 		double[][][] oldMatrix = oldTemplate.getMatrix();
+		cptTemplate = new double[oldMatrix.length][2][2];
 		setMatrix(oldMatrix);
 	}
 

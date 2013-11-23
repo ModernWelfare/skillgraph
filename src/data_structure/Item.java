@@ -21,11 +21,6 @@ public class Item extends Node implements Comparable<Item>
 	public Item(Item otherItem)
 	{
 		super(otherItem.getIndex(), otherItem.getName());
-
-		parent = otherItem.getParent();
-		guess = otherItem.getGuess();
-		slip = otherItem.getSlip();
-
 		cptTable = new CPT(otherItem.getCPTTable());
 	}
 
@@ -49,6 +44,12 @@ public class Item extends Node implements Comparable<Item>
 		guess = g;
 	}
 
+	public void setGuessAndGuessItem(Guess g)
+	{
+		guess = g;
+		guess.setItem(this);
+	}
+
 	public Slip getSlip()
 	{
 		return slip;
@@ -57,6 +58,12 @@ public class Item extends Node implements Comparable<Item>
 	public void setSlip(Slip sp)
 	{
 		slip = sp;
+	}
+
+	public void setSlipAndSlipItem(Slip sp)
+	{
+		slip = sp;
+		slip.setItem(this);
 	}
 
 
@@ -130,27 +137,6 @@ public class Item extends Node implements Comparable<Item>
 				{
 					returnValue = true;
 				}
-				else
-				{
-					System.err.println("Two items have the same name and index but different cpt's");
-					System.err.println(getName() + " " + getIndex());
-					System.err.println(otherItem1.getName() + " " + otherItem1.getIndex());
-					System.exit(-1);
-				}
-			}
-			else if(getName().equals(otherItem1.getName()) && getIndex() != otherItem1.getIndex())
-			{
-				System.err.println("Two items have the same name but different indices");
-				System.err.println(getName() + " " + getIndex());
-				System.err.println(otherItem1.getName() + " " + otherItem1.getIndex());
-				System.exit(-1);
-			}
-			else if(!getName().equals(otherItem1.getName()) && getIndex() == otherItem1.getIndex())
-			{
-				System.err.println("Two items have different names but the same indices");
-				System.err.println(getName() + " " + getIndex());
-				System.err.println(otherItem1.getName() + " " + otherItem1.getIndex());
-				System.exit(-1);
 			}
 		}
 
@@ -182,6 +168,10 @@ public class Item extends Node implements Comparable<Item>
 		sb.append("Item name = " + getName());
 		sb.append("\n");
 		sb.append("Skill name = " + parent.getName());
+		sb.append("\n");
+		sb.append("CPT table");
+		sb.append("\n");
+		sb.append(cptTable);
 		sb.append("\n");
 
 		return sb.toString();
