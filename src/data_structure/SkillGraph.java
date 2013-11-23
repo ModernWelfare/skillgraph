@@ -15,7 +15,8 @@ import util.FileReader;
  * @author Douglas Selent
  * 
  */
-public class SkillGraph {
+public class SkillGraph
+{
 
 	// assume these lists stay sorted by indices
 	// skill + item index corresponds to their index in the arrayList
@@ -39,9 +40,8 @@ public class SkillGraph {
 	 * @param guessSlipFilePath
 	 *            file path to the guess slip csv file
 	 */
-	public SkillGraph(String skillStructureFilePath,
-			String itemToSkillMappingFilePath, String skillFilePath,
-			String guessSlipFilePath) {
+	public SkillGraph(String skillStructureFilePath, String itemToSkillMappingFilePath, String skillFilePath, String guessSlipFilePath)
+	{
 		skillList = new ArrayList<Skill>();
 		itemList = new ArrayList<Item>();
 		guessList = new ArrayList<Guess>();
@@ -169,46 +169,76 @@ public class SkillGraph {
 
 	// Set and get functions
 
-	public List<Skill> getSkillList() {
+	public List<Skill> getSkillList()
+	{
 		return skillList;
 	}
 
-	public List<Item> getItemList() {
+	public List<Item> getItemList()
+	{
 		return itemList;
 	}
 
-	public List<Guess> getGuessList() {
+	public List<Guess> getGuessList()
+	{
 		return guessList;
 	}
 
-	public List<Slip> getSlipList() {
+	public List<Slip> getSlipList()
+	{
 		return slipList;
+	}
+
+	public int getNumberOfSkills()
+	{
+		return skillList.size();
+	}
+
+	public int getNumberOfItems()
+	{
+		return itemList.size();
+	}
+
+	public int getNumberOfGuesses()
+	{
+		return guessList.size();
+	}
+
+	public int getNumberOfSlips()
+	{
+		return slipList.size();
 	}
 
 	// skillIndex = array spot and not necessarily the skill index number
 	// typically they would be the same since we would want the skill indices to
 	// be in order
-	public Skill getSkill(int skillIndex) {
+	public Skill getSkill(int skillIndex)
+	{
 		return skillList.get(skillIndex);
 	}
 
-	public Item getItem(int itemIndex) {
+	public Item getItem(int itemIndex)
+	{
 		return itemList.get(itemIndex);
 	}
 
-	public Guess getGuess(int guessIndex) {
+	public Guess getGuess(int guessIndex)
+	{
 		return guessList.get(guessIndex);
 	}
 
-	public Slip getSlip(int slipIndex) {
+	public Slip getSlip(int slipIndex)
+	{
 		return slipList.get(slipIndex);
 	}
 
-	public CPTSkillTemplate getCPTSkillTemplate() {
+	public CPTSkillTemplate getCPTSkillTemplate()
+	{
 		return cptSkillTemplate;
 	}
 
-	public CPTGuessSlipTemplate getCPTGuessSlipTemplate() {
+	public CPTGuessSlipTemplate getCPTGuessSlipTemplate()
+	{
 		return cptGuessSlipTemplate;
 	}
 
@@ -221,12 +251,13 @@ public class SkillGraph {
 	 * 
 	 * @param itemToSkillMappingFilePath
 	 */
-	private void createSkillsAndItems(String itemToSkillMappingFilePath) {
-		List<String> itemInfo = FileReader
-				.readCSVFile(itemToSkillMappingFilePath);
+	private void createSkillsAndItems(String itemToSkillMappingFilePath)
+	{
+		List<String> itemInfo = FileReader.readCSVFile(itemToSkillMappingFilePath);
 
 		// loop to add all items and skills to lists
-		for (int i = 0; i < itemInfo.size(); i++) {
+		for (int i = 0; i < itemInfo.size(); i++)
+		{
 			int itemIndex = -1;
 			int skillIndex = -1;
 
@@ -239,13 +270,16 @@ public class SkillGraph {
 			// item index, skill index, item name, skill name
 			String[] itemParams = row.split(",");
 
-			try {
+			try
+			{
 				itemIndex = Integer.parseInt(itemParams[0]);
 				skillIndex = Integer.parseInt(itemParams[1]);
 
 				itemName = itemParams[2];
 				skillName = itemParams[3];
-			} catch (Exception e) {
+			}
+			catch (Exception e)
+			{
 				e.printStackTrace();
 				System.exit(-1);
 			}
@@ -260,11 +294,13 @@ public class SkillGraph {
 
 			// compare to existing lists and add if not there
 
-			if (!itemList.contains(newItem)) {
+			if(!itemList.contains(newItem))
+			{
 				itemList.add(newItem);
 			}
 
-			if (!skillList.contains(newSkill)) {
+			if(!skillList.contains(newSkill))
+			{
 				skillList.add(newSkill);
 			}
 
@@ -280,11 +316,13 @@ public class SkillGraph {
 	 * 
 	 * @param guessSlipFilePath
 	 */
-	private void createGuessAndSlip(String guessSlipFilePath) {
+	private void createGuessAndSlip(String guessSlipFilePath)
+	{
 		List<String> guessSlipInfo = FileReader.readCSVFile(guessSlipFilePath);
 
 		// loop to add all guess and slip nodes to the lists
-		for (int i = 0; i < guessSlipInfo.size(); i++) {
+		for (int i = 0; i < guessSlipInfo.size(); i++)
+		{
 			String row = guessSlipInfo.get(i);
 
 			// guess index, slip index, guess node name, slip node name
@@ -324,7 +362,8 @@ public class SkillGraph {
 	 * 
 	 * @param cptInfoFilePath
 	 */
-	private void storeSkillTemplate(String skillFilePath) {
+	private void storeSkillTemplate(String skillFilePath)
+	{
 		List<String> cptInfo = FileReader.readCSVFile(skillFilePath);
 		cptSkillTemplate = new CPTSkillTemplate(cptInfo);
 	}
@@ -335,29 +374,34 @@ public class SkillGraph {
 	 * 
 	 * @param guessSlipFilePath
 	 */
-	private void storeGuessSlipTemplate(String guessSlipFilePath) {
+	private void storeGuessSlipTemplate(String guessSlipFilePath)
+	{
 		List<String> cptInfo = FileReader.readCSVFile(guessSlipFilePath);
 		cptGuessSlipTemplate = new CPTGuessSlipTemplate(cptInfo);
 	}
 
 	// Mapping functions
 
-	private void addItemsToSkills(String itemToSkillMappingFilePath) {
-		List<String> itemInfo = FileReader
-				.readCSVFile(itemToSkillMappingFilePath);
+	private void addItemsToSkills(String itemToSkillMappingFilePath)
+	{
+		List<String> itemInfo = FileReader.readCSVFile(itemToSkillMappingFilePath);
 
 		// loop to link up the items to the skills
-		for (int i = 0; i < itemInfo.size(); i++) {
+		for (int i = 0; i < itemInfo.size(); i++)
+		{
 			int itemIndex = -1;
 			int skillIndex = -1;
 
 			String row = itemInfo.get(i);
 			String[] itemParams = row.split(",");
 
-			try {
+			try
+			{
 				itemIndex = Integer.parseInt(itemParams[0]);
 				skillIndex = Integer.parseInt(itemParams[1]);
-			} catch (Exception e) {
+			}
+			catch(Exception e)
+			{
 				e.printStackTrace();
 				System.exit(-1);
 			}
@@ -377,12 +421,12 @@ public class SkillGraph {
 	 *            the file path to the csv file holding the skill structure
 	 *            information
 	 */
-	private void addSkillsToSkills(String skillStructureFilePath) {
+	private void addSkillsToSkills(String skillStructureFilePath)
+	{
 
 		// read use the file reader to read the csv file
 
-		List<String> structureInfo = FileReader
-				.readCSVFile(skillStructureFilePath);
+		List<String> structureInfo = FileReader.readCSVFile(skillStructureFilePath);
 		int numberOfSkills = skillList.size();
 
 		int[][] skillMatrix = new int[numberOfSkills][numberOfSkills];
@@ -411,8 +455,10 @@ public class SkillGraph {
 		}
 	}
 
-	private void addGuessSlipToItems() {
-		for (int i = 0; i < itemList.size(); i++) {
+	private void addGuessSlipToItems()
+	{
+		for (int i=0; i<itemList.size(); i++)
+		{
 			Item item = itemList.get(i);
 			Guess guess = guessList.get(i);
 			Slip slip = slipList.get(i);
@@ -427,20 +473,24 @@ public class SkillGraph {
 
 	// Instansiation functions
 
-	private void instansiateSkillCPTS() {
+	private void instansiateSkillCPTS()
+	{
 		// Create CPT table with random values for each field with the range
 		// specified by cptSkillTemplate
-		for (Skill skill : skillList) {
+		for (Skill skill : skillList)
+		{
 			// get the number of parents the node has
 			int numberOfParents = skill.getNumberOfParents();
 			skill.setCPTTable(new CPT(numberOfParents, cptSkillTemplate));
 		}
 	}
 
-	private void instansiateGuessSlipCPTS() {
+	private void instansiateGuessSlipCPTS()
+	{
 		// Create CPT table with random values for each field with the range
 		// specified by cptSkillTemplate
-		for (Skill skill : skillList) {
+		for (Skill skill : skillList)
+		{
 			// get the number of parents the node has
 			int numberOfParents = skill.getNumberOfParents();
 			skill.setCPTTable(new CPT(numberOfParents, cptSkillTemplate));
@@ -448,20 +498,24 @@ public class SkillGraph {
 
 		// Create CPT table with random values for each field with the range
 		// specified by cptGuessSlipTemplate
-		for (int i = 0; i < guessList.size(); i++) {
+		for (int i = 0; i < guessList.size(); i++)
+		{
 			Guess guess = guessList.get(i);
 			guess.setCPTTable(new CPT(i, 0, cptGuessSlipTemplate));
 		}
 
-		for (int i = 0; i < slipList.size(); i++) {
+		for (int i=0; i<slipList.size(); i++)
+		{
 			Slip slip = slipList.get(i);
 			slip.setCPTTable(new CPT(i, 1, cptGuessSlipTemplate));
 		}
 	}
 
 	// assume item has 1 skill, 1 guess, and 1 slip
-	private void instansiateItemCPTS() {
-		for (Item item : itemList) {
+	private void instansiateItemCPTS()
+	{
+		for (Item item : itemList)
+		{
 			item.setCPTTable(new CPT());
 		}
 	}
@@ -477,7 +531,8 @@ public class SkillGraph {
 	 * @param childSkillIndex
 	 *            the index of the child skill in this merge
 	 */
-	public void mergeSkills(int parentSkillIndex, int childSkillIndex) {
+	public void mergeSkills(int parentSkillIndex, int childSkillIndex) 
+	{
 		Skill parent = skillList.get(parentSkillIndex);
 		Skill child = skillList.get(childSkillIndex);
 
@@ -486,10 +541,12 @@ public class SkillGraph {
 		// add child children to parent child list
 		List<Skill> grandChildren = child.getChildren();
 
-		for (Skill grandChild : grandChildren) {
+		for (Skill grandChild : grandChildren)
+		{
 			child.removeChildAndChildParent(grandChild);
 
-			if (!parent.hasChild(grandChild)) {
+			if (!parent.hasChild(grandChild))
+			{
 				parent.addChildAndChildParent(grandChild);
 			}
 		}
@@ -497,10 +554,12 @@ public class SkillGraph {
 		// add child parents to parent parents list
 		List<Skill> childParents = child.getParents();
 
-		for (Skill childParent : childParents) {
+		for (Skill childParent : childParents)
+		{
 			child.removeParentAndParentChild(childParent);
 
-			if (!parent.hasParent(childParent)) {
+			if (!parent.hasParent(childParent))
+			{
 				parent.addParentAndParentChild(childParent);
 			}
 		}
@@ -511,7 +570,8 @@ public class SkillGraph {
 		List<Item> childItemList = new ArrayList<Item>(child.getItems());
 
 		// add the items the child has to the parent
-		for (Item item : childItemList) {
+		for (Item item : childItemList)
+		{
 			child.removeItem(item);
 			parent.addItem(item);
 		}
@@ -527,19 +587,23 @@ public class SkillGraph {
 
 	// super important to call after any additions or subtractions of skills in
 	// the graph
-	private void reIndexSkills() {
+	private void reIndexSkills()
+	{
 		Collections.sort(skillList);
 
-		for (int i = 0; i < skillList.size(); i++) {
+		for (int i = 0; i < skillList.size(); i++)
+		{
 			Skill skill = skillList.get(i);
 			skill.setIndex(i);
 		}
 	}
 
-	private void reIndexItems() {
+	private void reIndexItems()
+	{
 		Collections.sort(itemList);
 
-		for (int i = 0; i < itemList.size(); i++) {
+		for (int i = 0; i < itemList.size(); i++)
+		{
 			Item item = itemList.get(i);
 			item.setIndex(i);
 		}
@@ -553,7 +617,8 @@ public class SkillGraph {
 	 * 
 	 * 
 	 */
-	public int[][] generateSkillMatrix() {
+	public int[][] generateSkillMatrix()
+	{
 		int skillListSize = skillList.size();
 		int skillMatrix[][] = new int[skillListSize][skillListSize];
 
@@ -570,8 +635,10 @@ public class SkillGraph {
 
 		// check that skill graph has no self-cycles
 
-		for (int i = 0; i < skillListSize; i++) {
-			if (skillMatrix[i][i] == 1) {
+		for (int i=0; i<skillListSize; i++)
+		{
+			if(skillMatrix[i][i] == 1)
+			{
 				System.err.println("Self cycle in skill matrix detected");
 				System.exit(-1);
 			}
@@ -580,16 +647,20 @@ public class SkillGraph {
 		return skillMatrix;
 	}
 
-	public String stringifySkillMatrix() {
+	public String stringifySkillMatrix()
+	{
 		int skillMatrix[][] = generateSkillMatrix();
 		return stringifySkillMatrix(skillMatrix);
 	}
 
-	public String stringifySkillMatrix(int skillMatrix[][]) {
+	public String stringifySkillMatrix(int skillMatrix[][])
+	{
 		StringBuilder sb = new StringBuilder();
 
-		for (int i = 0; i < skillMatrix.length; i++) {
-			for (int j = 0; j < skillMatrix.length; j++) {
+		for (int i = 0; i < skillMatrix.length; i++)
+		{
+			for (int j = 0; j < skillMatrix.length; j++)
+			{
 				sb.append(skillMatrix[i][j]);
 				sb.append(" ");
 			}
@@ -604,68 +675,83 @@ public class SkillGraph {
 	}
 
 	@Override
-	public boolean equals(Object otherSkillGraph) {
+	public boolean equals(Object otherSkillGraph)
+	{
 		boolean returnValue = false;
 
-		if (otherSkillGraph == null) {
+		if(otherSkillGraph == null)
+		{
 			returnValue = false;
-		} else if (this == otherSkillGraph) {
+		}
+		else if(this == otherSkillGraph)
+		{
 			returnValue = true;
-		} else if (!(otherSkillGraph instanceof SkillGraph)) {
+		}
+		else if(!(otherSkillGraph instanceof SkillGraph))
+		{
 			// probably an error
 
 			returnValue = false;
-		} else {
+		}
+		else
+		{
 			returnValue = true;
 
 			SkillGraph otherSkillGraph1 = (SkillGraph) otherSkillGraph;
 
-			if (!cptSkillTemplate
-					.equals(otherSkillGraph1.getCPTSkillTemplate())) {
+			if(!cptSkillTemplate.equals(otherSkillGraph1.getCPTSkillTemplate()))
+			{
 				returnValue = false;
 			}
 
-			if (returnValue
-					&& !cptGuessSlipTemplate.equals(otherSkillGraph1
-							.getCPTGuessSlipTemplate())) {
+			if(returnValue && !cptGuessSlipTemplate.equals(otherSkillGraph1.getCPTGuessSlipTemplate()))
+			{
 				returnValue = false;
 			}
 
-			for (int i = 0; i < skillList.size() && returnValue; i++) {
+			for (int i = 0; i < skillList.size() && returnValue; i++)
+			{
 				Skill skill = skillList.get(i);
 				Skill otherSkill = otherSkillGraph1.getSkill(i);
 
-				if (!skill.equals(otherSkill)) {
+				if(!skill.equals(otherSkill))
+				{
 					returnValue = false;
 				}
 
 			}
 
-			for (int i = 0; i < itemList.size() && returnValue; i++) {
+			for (int i = 0; i < itemList.size() && returnValue; i++)
+			{
 				Item item = itemList.get(i);
 				Item otherItem = otherSkillGraph1.getItem(i);
 
-				if (!item.equals(otherItem)) {
+				if(!item.equals(otherItem))
+				{
 					returnValue = false;
 				}
 
 			}
 
-			for (int i = 0; i < guessList.size() && returnValue; i++) {
+			for (int i = 0; i < guessList.size() && returnValue; i++)
+			{
 				Guess guess = guessList.get(i);
 				Guess otherGuess = otherSkillGraph1.getGuess(i);
 
-				if (!guess.equals(otherGuess)) {
+				if(!guess.equals(otherGuess))
+				{
 					returnValue = false;
 				}
 
 			}
 
-			for (int i = 0; i < slipList.size() && returnValue; i++) {
+			for (int i = 0; i < slipList.size() && returnValue; i++)
+			{
 				Slip slip = slipList.get(i);
 				Slip otherSlip = otherSkillGraph1.getSlip(i);
 
-				if (!slip.equals(otherSlip)) {
+				if (!slip.equals(otherSlip))
+				{
 					returnValue = false;
 				}
 
@@ -676,7 +762,8 @@ public class SkillGraph {
 	}
 
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("\n");
@@ -698,7 +785,8 @@ public class SkillGraph {
 		sb.append("\n");
 		sb.append("\n");
 
-		for (int i = 0; i < skillList.size(); i++) {
+		for (int i = 0; i < skillList.size(); i++)
+		{
 			sb.append(skillList.get(i));
 			sb.append("\n");
 		}
@@ -708,7 +796,8 @@ public class SkillGraph {
 		sb.append("\n");
 		sb.append("\n");
 
-		for (int i = 0; i < itemList.size(); i++) {
+		for (int i = 0; i < itemList.size(); i++)
+		{
 			sb.append(itemList.get(i));
 			sb.append("\n");
 		}
@@ -718,7 +807,8 @@ public class SkillGraph {
 		sb.append("\n");
 		sb.append("\n");
 
-		for (int i = 0; i < guessList.size(); i++) {
+		for (int i = 0; i < guessList.size(); i++)
+		{
 			sb.append(guessList.get(i));
 			sb.append("\n");
 		}
@@ -728,7 +818,8 @@ public class SkillGraph {
 		sb.append("\n");
 		sb.append("\n");
 
-		for (int i = 0; i < slipList.size(); i++) {
+		for (int i = 0; i < slipList.size(); i++)
+		{
 			sb.append(slipList.get(i));
 			sb.append("\n");
 		}

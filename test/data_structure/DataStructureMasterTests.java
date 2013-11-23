@@ -48,4 +48,36 @@ public class DataStructureMasterTests {
 		RandomGraphGenerator.generateRandomGraph(50, 70, 3, 5, 5, 9);
 		assertTrue(true);
 	}
+
+	@Test
+	public void testCopying()
+	{
+		//copy the skill graph
+		//test they are equal
+
+		//change name
+		//test that they are not equal
+		//test each name is correct
+		//change name back
+		//test that they ae equal
+
+		//change a skill link
+		//test that they are not equal
+		//test each link is correct
+		//change skill link back
+		//test that they ae equal
+
+		//change an item link
+		//test that they are not equal
+		//test each item link is correct
+		//change item link back
+		//test that they are equal
+
+		//change a cpt table
+		//test that they are not equal
+		//test that they are correct
+		//change cpt table back
+		//test that they ae equal
+		
+	}
 }
