@@ -67,7 +67,9 @@ public class CPT {
 
 	// For guess and slip nodes
 	public CPT(int index, int guessOrSlip, CPTGuessSlipTemplate cptTemplate) {
-		probabilityValues = new double[1][2];
+		size = 1;
+
+		probabilityValues = new double[size][2];
 
 		double lowerBound = cptTemplate.getLowerBound(index, guessOrSlip);
 		double upperBound = cptTemplate.getUpperBound(index, guessOrSlip);
@@ -82,7 +84,9 @@ public class CPT {
 	// skill,guess,slip = the binary string
 	// determnistic
 	public CPT() {
-		probabilityValues = new double[8][2];
+		size = 8;
+
+		probabilityValues = new double[size][2];
 
 		// skill = 0, guess = 0, slip = 0
 		probabilityValues[0][0] = 1;
@@ -127,8 +131,8 @@ public class CPT {
 		probabilityValues = new double[size][2];
 
 		for (int i = 0; i < size; i++) {
-			probabilityValues[i][0] = originalCPT.probabilityValues[i][0];
-			probabilityValues[i][1] = originalCPT.probabilityValues[i][1];
+			probabilityValues[i][0] = originalCPT.getProbability(i, 0);
+			probabilityValues[i][1] = originalCPT.getProbability(i, 1);
 		}
 	}
 

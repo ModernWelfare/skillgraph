@@ -72,6 +72,7 @@ public class CPTSkillTemplate
 	public CPTSkillTemplate(CPTSkillTemplate oldTemplate)
 	{
 		double[][][] oldMatrix = oldTemplate.getMatrix();
+		cptTemplate = new double[oldMatrix.length][oldMatrix.length][2];
 		setMatrix(oldMatrix);
 	}
 

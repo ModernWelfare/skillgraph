@@ -47,29 +47,6 @@ public class Skill extends Node implements Comparable<Skill> {
 		parents = new ArrayList<Skill>();
 		items = new ArrayList<Item>();
 
-		// deep copy the array lists
-
-		List<Skill> oldChildList = oldSkill.getChildren();
-
-		for (int i = 0; i < oldChildList.size(); i++) {
-			Skill newSkill = oldChildList.get(i);
-			children.add(newSkill);
-		}
-
-		List<Skill> oldParentList = oldSkill.getParents();
-
-		for (int i = 0; i < oldParentList.size(); i++) {
-			Skill newSkill = oldParentList.get(i);
-			parents.add(newSkill);
-		}
-
-		List<Item> oldItemList = oldSkill.getItems();
-
-		for (int i = 0; i < oldItemList.size(); i++) {
-			Item item = oldItemList.get(i);
-			items.add(item);
-		}
-
 		cptTable = new CPT(oldSkill.getCPTTable());
 	}
 
@@ -402,29 +379,6 @@ public class Skill extends Node implements Comparable<Skill> {
 				{
 					returnValue = true;
 				}
-				else
-				{
-					System.err.println("Two skills have the same name and index but different cpt's");
-					System.err.println(name + " " + index);
-					System.err.println(otherSkill1.getName() + " " + otherSkill1.getIndex());
-					System.out.println(this.getCPTTable());
-					System.out.println(otherSkill1.getCPTTable());
-					System.exit(-1);
-				}
-			}
-			else if(getName().equals(otherSkill1.getName()) && getIndex() != otherSkill1.getIndex())
-			{
-				System.err.println("Two skills have the same name but different indices");
-				System.err.println(this);
-				System.err.println(otherSkill1);
-				System.exit(-1);
-			}
-			else if (!getName().equals(otherSkill1.getName()) && getIndex() == otherSkill1.getIndex())
-			{
-				System.err.println("Two skills have different names but the same indices");
-				System.err.println(this);
-				System.err.println(otherSkill1);
-				System.exit(-1);
 			}
 		}
 
