@@ -147,11 +147,31 @@ public class SkillMatrix {
 			levelList.get(levelNum - 1).add(j);
 		}
 
+		int[] secondLevelParentCount = new int[levelList.get(1).size()];
+
+		for (int i = 0; i < levelList.get(1).size(); i++) {
+			secondLevelParentCount[i] = 0;
+		}
+
+		List<Integer> secondLevelCopy = new ArrayList<Integer>();
+		// make a copy of the original parent list
+		for (Integer t : levelList.get(1)) {
+			secondLevelCopy.add(t);
+		}
+
+		int offset = secondLevelCopy.get(0);
+
 		// make sure that every node in the first level has at least one child
 		for (Integer n : levelList.get(0)) {
-			int childIndex = (int) ConstantRNG.getNextNumberUniform(0,
-					levelList.get(1).size());
-			addArc(n, levelList.get(1).get(childIndex));
+			Collections.shuffle(secondLevelCopy);
+			addArc(n, secondLevelCopy.get(0));
+			secondLevelParentCount[secondLevelCopy.get(0) - offset]++;
+			if (secondLevelParentCount[secondLevelCopy.get(0) - offset] == 4) {
+				secondLevelCopy.remove(0);
+				if (secondLevelCopy.isEmpty()) {
+					break;
+				}
+			}
 		}
 
 		for (int i = 1; i < levelNum; i++) {
@@ -159,9 +179,12 @@ public class SkillMatrix {
 				// randomly generate the number of parents a child should have,
 				// the number must be below or equal to the number of
 				// max_parent_per_child
-				int numOfParents = (int) ConstantRNG.getNextNumberUniform(1,
-						Math.min(levelList.get(i - 1).size(),
-								MAX_PARENT_PER_CHILD + 1));
+				int numOfParents = 0;
+
+				numOfParents = (int) ConstantRNG
+						.getNextNumberUniform(1, Math.min(levelList.get(i - 1)
+								.size(), MAX_PARENT_PER_CHILD));
+
 				int childIndex = levelList.get(i).get(j);
 				List<Integer> parentListCopy = new ArrayList<Integer>();
 
@@ -173,23 +196,52 @@ public class SkillMatrix {
 				// shuffle the list for randomness
 				Collections.shuffle(parentListCopy);
 
+				// add the arc if a new arc can be added
 				for (int k = 0; k < numOfParents; k++) {
-					addArc(parentListCopy.remove(0), childIndex);
+					if (canAddParent(childIndex)) {
+						addArc(parentListCopy.remove(0), childIndex);
+					}
 				}
 			}
 		}
 	}
 
+	private boolean canAddParent(int childIndex) {
+		int parentCount;
+		parentCount = 0;
+		for (int j = 0; j < width; j++) {
+			if (skillMatrix[j][childIndex] == 1) {
+				parentCount++;
+			}
+		}
+		if (parentCount == 4) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Out puts hte skill to skill mapping matrix to a file
+	 * 
+	 * @param folderName
+	 *            the name of the folder in which the file would be stored
+	 */
 	public void outPutToFile(String folderName) {
+
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < width; j++) {
-				sb.append(Integer.toString(skillMatrix[i][j]) + ", ");
+				sb.append(Integer.toString(skillMatrix[i][j]) + ",");
 			}
 			sb.append("\n");
 		}
 
-		String path = folderName + "/skillGraph.csv";
+		if (!checkParentNumberValid()) {
+			System.out.println(sb.toString());
+			System.exit(-1);
+		}
+
+		String path = folderName + "/SkillGraph.csv";
 
 		File dir = new File(folderName);
 
@@ -204,6 +256,22 @@ public class SkillMatrix {
 		} catch (FileNotFoundException | UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private boolean checkParentNumberValid() {
+		int parentCount;
+		for (int i = 0; i < width; i++) {
+			parentCount = 0;
+			for (int j = 0; j < width; j++) {
+				if (skillMatrix[j][i] == 1) {
+					parentCount++;
+				}
+			}
+			if (parentCount > 4) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private void addArc(int parentIndex, int childIndex) {

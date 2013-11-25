@@ -7,14 +7,14 @@ import org.junit.Test;
 import util.RandomGraphGenerator;
 
 public class DataStructureMasterTests {
-	@Test
-	public void testGraphCreationNoError() {
-		SkillGraph graph = new SkillGraph("Example/SkillStructure1.csv",
-				"Example/ItemToSkillMapping1.txt", "Example/CPT_Ranges1.csv",
-				"Example/GuessAndSlipRanges1.txt");
-		System.out.println(graph.toString());
-		assertTrue(true);
-	}
+	// @Test
+	// public void testGraphCreationNoError() {
+	// SkillGraph graph = new SkillGraph("Example/SkillStructure1.csv",
+	// "Example/ItemToSkillMapping1.txt", "Example/CPT_Ranges1.csv",
+	// "Example/GuessAndSlipRanges1.txt");
+	// System.out.println(graph.toString());
+	// assertTrue(true);
+	// }
 
 	@Test
 	public void rangeCreationWithString() {
@@ -33,19 +33,29 @@ public class DataStructureMasterTests {
 		assertTrue((new SkillMatrix(skillArray)).isFreeOfAlternatePath(1, 2));
 	}
 
+	// @Test
+	// public void getAllPossibleMerges() {
+	// SkillGraph graph = new SkillGraph("Example/SkillStructure1.csv",
+	// "Example/ItemToSkillMapping1.txt", "Example/CPT_Ranges1.csv",
+	// "Example/GuessAndSlipRanges1.txt");
+	// graph.mergeSkills(2, 3);
+	// System.out.println(graph);
+	// assertTrue(true);
+	// }
+
 	@Test
-	public void getAllPossibleMerges() {
-		SkillGraph graph = new SkillGraph("Example/SkillStructure1.csv",
-				"Example/ItemToSkillMapping1.txt", "Example/CPT_Ranges1.csv",
-				"Example/GuessAndSlipRanges1.txt");
-		graph.mergeSkills(2, 3);
-		System.out.println(graph);
+	public void testRandomGraphGeneration() {
+		RandomGraphGenerator.generateRandomGraph(20, 30, 3, 5, 5, 10, "2");
 		assertTrue(true);
 	}
 
 	@Test
-	public void testRandomGraphGeneration() {
-		RandomGraphGenerator.generateRandomGraph(50, 70, 3, 5, 5, 9);
+	public void testGraphCreationFromGeneratedDataNoError() {
+		SkillGraph graph = new SkillGraph("2/SkillGraph.csv",
+				"2/ItemToSkillMapping.csv", "Example/CPT_Ranges1.csv",
+				"2/GuessAndSlipRanges.csv");
+		System.out.println(graph.toString());
 		assertTrue(true);
 	}
+
 }
