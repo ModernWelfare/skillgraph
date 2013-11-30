@@ -28,7 +28,7 @@ public class MathematicaGenerator
 
 	private static final String[] testAlphabet = {"A", "B", "C", "D"};
 
-	public MathematicaGenerator()
+	private MathematicaGenerator()
 	{
 	}
 

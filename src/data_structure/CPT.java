@@ -77,7 +77,6 @@ public class CPT {
 		probabilityValues[0][1] = ConstantRNG.getNextNumberUniform(lowerBound,
 				upperBound);
 		probabilityValues[0][0] = (100 - probabilityValues[0][1] * 100) / 100;
-		;
 	}
 
 	// for item nodes

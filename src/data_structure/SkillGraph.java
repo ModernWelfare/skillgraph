@@ -533,19 +533,28 @@ public class SkillGraph
 	 */
 	public void mergeSkills(int parentSkillIndex, int childSkillIndex) 
 	{
+
 		Skill parent = skillList.get(parentSkillIndex);
 		Skill child = skillList.get(childSkillIndex);
+
+		if(!parent.hasChild(child))
+		{
+			System.err.println("Cannot merge these skills, the first skill is not a parent of the second skill");
+			System.err.println(parent.getName() + "  " + child.getName());
+			System.exit(-1);
+		}
 
 		parent.setName(parent.getName() + "x" + child.getName());
 
 		// add child children to parent child list
 		List<Skill> grandChildren = child.getChildren();
 
-		for (Skill grandChild : grandChildren)
+		for(int i=0; i<grandChildren.size(); i++)
 		{
+			Skill grandChild = grandChildren.get(i);
 			child.removeChildAndChildParent(grandChild);
 
-			if (!parent.hasChild(grandChild))
+			if(!parent.hasChild(grandChild))
 			{
 				parent.addChildAndChildParent(grandChild);
 			}
@@ -554,18 +563,16 @@ public class SkillGraph
 		// add child parents to parent parents list
 		List<Skill> childParents = child.getParents();
 
-		for (Skill childParent : childParents)
+		for(int i=0; i<childParents.size(); i++)
 		{
+			Skill childParent = childParents.get(i);
 			child.removeParentAndParentChild(childParent);
 
-			if (!parent.hasParent(childParent))
+			if(!parent.hasParent(childParent) && parent.getIndex() != childParent.getIndex())
 			{
 				parent.addParentAndParentChild(childParent);
 			}
 		}
-
-		// remove child from parent
-		parent.removeChildAndChildParent(child);
 
 		List<Item> childItemList = new ArrayList<Item>(child.getItems());
 
