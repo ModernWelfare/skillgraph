@@ -35,8 +35,11 @@ public class ConstantRNG
 
 	public static int getNextInt(int lowerBound, int upperBound)
 	{
-		//include upper bound
-		return random.nextInt(lowerBound, upperBound+1);
+		int adjustedUpperBound = (upperBound+1) - lowerBound;
+		int randomNumber = random.nextInt(adjustedUpperBound);
+		int adjustedNumber = randomNumber + lowerBound;
+
+		return adjustedNumber;
 	}
 
 	/**
