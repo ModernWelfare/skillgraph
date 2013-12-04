@@ -3,6 +3,7 @@ package util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 import java.awt.Point;
 
 import data_structure.*;
@@ -66,7 +67,7 @@ public class GraphFunctions
 
 	//copies matrix
 	//assumes square matrix
-	private static int[][] matrixCopy(final int otherMatrix[][])
+	public static int[][] matrixCopy(final int otherMatrix[][])
 	{
 		int size = otherMatrix.length;
 		int[][] newMatrix = new int[size][size];
@@ -98,6 +99,79 @@ public class GraphFunctions
 		return returnValue;
 	}
 
+	//determine if the (undirected) skill graph is connected
+	public static boolean isMatrixConnected(final int[][] skillMatrix)
+	{
+		boolean returnValue = false;
+
+		int[][] workingMatrix = GraphFunctions.matrixCopy(skillMatrix);
+		int size = workingMatrix.length;
+
+		Stack<Integer> connectedVertices = new Stack<Integer>();
+		List<Integer> fringeVertices = new ArrayList<Integer>();
+		List<Integer> newFringeVertices = new ArrayList<Integer>();
+		
+		//convert to undirected graph
+
+		for(int i=0; i<size; i++)
+		{
+			for(int j=i; j<size; j++)
+			{
+				workingMatrix[j][i] = workingMatrix[i][j];
+			}
+		}
+		
+		fringeVertices.add(0);
+		connectedVertices.push(0);
+
+		while(!fringeVertices.isEmpty())
+		{
+			newFringeVertices.clear();
+
+			//for all vertices on the fringe
+			for(int i=0; i<fringeVertices.size(); i++)
+			{
+				int vertex = fringeVertices.get(i);
+
+				//add all vertices that are connected to this one
+				for(int j=0; j<size; j++)
+				{
+					if(workingMatrix[vertex][j] == 1)
+					{
+						if(!newFringeVertices.contains(j) && connectedVertices.search(j) == -1)
+						{
+							newFringeVertices.add(j);
+							connectedVertices.push(j);
+						}
+					}
+				}
+			}
+
+			fringeVertices.clear();
+
+			for(int i=0; i<newFringeVertices.size(); i++)
+			{
+				fringeVertices.add(newFringeVertices.get(i));
+			}
+		}
+
+		if(connectedVertices.size() == size)
+		{
+			returnValue = true;
+		}
+
+		/*
+		else
+		{
+			System.out.println("Failed connectivity check");
+			System.out.println(connectedVertices.size());
+			printSkillMatrix(workingMatrix);
+		}
+		*/
+
+		return returnValue;
+	}
+
 	//returns a topological sort of the graph
 	//returns an incomplete list if the graph cannot be sorted (has cycles)
 	public static List<Skill> topologicalSort(final SkillGraph skillGraph)
@@ -118,19 +192,23 @@ public class GraphFunctions
 
 			for(int i=0; i<numberOfSkills && skillToAdd == -1; i++)
 			{
-				boolean noParents = true;
-
-				for(int j=0; j<numberOfSkills && noParents; j++)
+				//skip if already added
+				if(!skillList.contains(skillGraph.getSkill(i)))
 				{
-					if(currentSkillMatrix[j][i] == 1)
+					boolean noParents = true;
+
+					for(int j=0; j<numberOfSkills && noParents; j++)
 					{
-						noParents = false;
+						if(currentSkillMatrix[j][i] == 1)
+						{
+							noParents = false;
+						}
 					}
-				}
 
-				if(noParents)
-				{
-					skillToAdd = i;
+					if(noParents)
+					{
+						skillToAdd = i;
+					}
 				}
 			}
 
@@ -148,5 +226,102 @@ public class GraphFunctions
 		
 
 		return skillList;
+	}
+
+	public static boolean isLevelInRange(int[][] skillMatrix, int minLevel, int maxLevel)
+	{
+		boolean returnValue = false;
+		int numberOfLevels = getNumberOfLevels(skillMatrix);
+
+		if(minLevel <= numberOfLevels && maxLevel >= numberOfLevels)
+		{
+			returnValue = true;
+		}
+
+		return returnValue;
+	}
+
+	//slightly different topological sort
+	public static int getNumberOfLevels(int[][] skillMatrix)
+	{
+		if(skillMatrix.length < 1)
+		{
+			System.err.println("Matrix of zero size when getting the number of levels in the skill graph");
+			System.exit(-1);
+		}
+
+		int numberOfLevels = 0;
+		int numberOfSkills = skillMatrix.length;
+		int[][] currentSkillMatrix = matrixCopy(skillMatrix);
+		List<Integer> skillList = new ArrayList<Integer>();
+		boolean stuck = false;
+
+		while(skillList.size() < numberOfSkills && !stuck)
+		{
+			List<Integer> addList = new ArrayList<Integer>();
+
+			//look for *all* skills with no incoming edges
+
+			for(int i=0; i<numberOfSkills; i++)
+			{
+				if(!skillList.contains(i))
+				{
+					boolean noParents = true;
+
+					for(int j=0; j<numberOfSkills && noParents; j++)
+					{
+						if(currentSkillMatrix[j][i] == 1)
+						{
+							noParents = false;
+						}
+					}
+
+					if(noParents)
+					{
+						addList.add(i);
+					}
+				}
+			}
+
+			//add the skill to the topologically sorted list and update the current matrix
+			for(int i=0; i<addList.size(); i++)
+			{
+				int skillToAdd = addList.get(i);
+				skillList.add(skillToAdd);
+
+				for(int j=0; j<numberOfSkills; j++)
+				{
+					currentSkillMatrix[skillToAdd][j] = 0;
+				}
+			}
+
+			if(!addList.isEmpty())
+			{
+				numberOfLevels++;
+			}
+		}
+		
+
+		if(skillList.size() != numberOfSkills)
+		{
+			System.err.println("possible cycle detected when getting the number of levels in the skill graph");
+			System.exit(-1);
+		}
+
+		return numberOfLevels;
+	}
+
+	public static void printSkillMatrix(int[][] skillMatrix)
+	{
+		for(int i=0; i<skillMatrix.length; i++)
+		{
+			for(int j=0; j<skillMatrix[i].length; j++)
+			{
+				System.out.print(skillMatrix[i][j]);
+				System.out.print(" ");
+			}
+
+			System.out.println("\n");
+		}
 	}
 }
