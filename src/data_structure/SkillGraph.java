@@ -592,6 +592,64 @@ public class SkillGraph
 		reIndexSkills();
 	}
 
+	public void generateFakeSkillGraph(){
+		//get a random skill# from the current skill graph
+		int correctSkillID = ConstantRNG.getNextNumberInteger(0, getSkillList().size()-1);
+		
+		Skill fakeSkill = new Skill(getSkillList().size(),"FirstFakeSkill-" + getSkillList().size());
+		Skill correctSkill = getSkill(correctSkillID);
+		
+		//fakeSkill.setIndex(getSkillList().size());
+		//Split the items up into two and attach items to the new skill.
+		for (int i=0; i<(correctSkill.getItems().size()/2); i++){
+			fakeSkill.addItem(correctSkill.getItem(i));
+			correctSkill.removeItem(i*2);
+		}
+		//Make the real skill the parent of the fake skill
+		fakeSkill.addParent(correctSkill);
+		
+		getSkillList().add(fakeSkill);
+		//Remove all the children skills of the fake skill
+
+		reIndexSkills();
+	}
+	
+	public void splitSkill(){
+		//If no skill is selected, the skill is selected at random.
+		int oldSkillID = ConstantRNG.getNextNumberInteger(0, getSkillList().size()-1);
+		
+		Skill oldSkill = getSkill(oldSkillID);
+
+		splitSkill(oldSkill);	
+	}
+	
+	
+	public void splitSkill(Skill oldSkill){
+		Skill newSkill = new Skill(oldSkill);
+
+		newSkill.setIndex(getSkillList().size());
+		newSkill.setName(oldSkill.getName() + "-split-" + newSkill.getIndex());
+		
+		//Split the items up between the two skills
+		int itemsSeperator = ConstantRNG.getNextNumberInteger(1,oldSkill.getItems().size());
+		for (int i=0; i<(itemsSeperator/2); i++){
+			newSkill.addItem(oldSkill.getItem(i));
+			oldSkill.removeItem(i*2);
+		}
+
+		//Move the children of the oldSkill and attach them to the new skill
+		for (Skill sk:oldSkill.getChildren()){
+			newSkill.addChild(sk);
+			oldSkill.removeChild(sk);
+		}
+
+		//Make the new skill a child of the old skill
+		oldSkill.addChild(newSkill);
+		//attach the new skill and re-index all the skills 
+		getSkillList().add(newSkill);
+		reIndexSkills();
+	}
+	
 	// super important to call after any additions or subtractions of skills in
 	// the graph
 	private void reIndexSkills()
