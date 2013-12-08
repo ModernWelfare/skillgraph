@@ -1,11 +1,12 @@
-
-
 package util;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.io.FileWriter;
-import data_structure.*;
+
+import data_structure.Guess;
+import data_structure.Item;
+import data_structure.Skill;
+import data_structure.SkillGraph;
+import data_structure.Slip;
 
 /**
  * Class to generate the mathematica output for a skill graph
@@ -14,77 +15,65 @@ import data_structure.*;
  * @author Douglas Selent
  * 
  */
-public class MathematicaGenerator
-{
-	private static final String[] alphabet = {"A", "B", "C", "D", "E", "F", "G", "H",
-						"I", "J", "K", "L", "M", "N", "O", "P",
-						"Q", "R", "S", "T", "U", "V", "W", "X",
-						"Y", "Z"};
+public class MathematicaGenerator {
+	// private static final String[] alphabet = { "A", "B", "C", "D", "E", "F",
+	// "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S",
+	// "T", "U", "V", "W", "X", "Y", "Z" };
 
-	//no i,l,o
-	private static final String[] modifiedAlphabet = {"A", "B", "C", "D", "E", "F", "G", "H",
-							"J", "K", "M", "N", "P", "Q", "R", "S",
-							"T", "U", "V", "W", "X", "Y", "Z"};
+	// no i,l,o
+	private static final String[] modifiedAlphabet = { "A", "B", "C", "D", "E",
+			"F", "G", "H", "J", "K", "M", "N", "P", "Q", "R", "S", "T", "U",
+			"V", "W", "X", "Y", "Z" };
 
-	private static final String[] testAlphabet = {"A", "B", "C", "D"};
+	// private static final String[] testAlphabet = { "A", "B", "C", "D" };
 
-	private MathematicaGenerator()
-	{
+	private MathematicaGenerator() {
 	}
 
-	//mathematica is picky on its input
-	//using "z" as a separator betwen index and name
-	//prefixing index with "I"
-	//type: 0 = all, 1 = no indices, 2 = no guess/slip, 3 = only names
-	public static String getMathematicaString(SkillGraph skillGraph, int type, boolean edgeLabels)
-	{
+	// mathematica is picky on its input
+	// using "z" as a separator betwen index and name
+	// prefixing index with "I"
+	// type: 0 = all, 1 = no indices, 2 = no guess/slip, 3 = only names
+	public static String getMathematicaString(SkillGraph skillGraph, int type,
+			boolean edgeLabels) {
 		int edgeCount = 1;
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("LayeredGraphPlot[");
 		sb.append("{");
-       
-		//graph skills and items
-		for(int i=0; i<skillGraph.getNumberOfSkills(); i++)
-		{
+
+		// graph skills and items
+		for (int i = 0; i < skillGraph.getNumberOfSkills(); i++) {
 			Skill parent = skillGraph.getSkill(i);
 
 			String parentName = parent.getName();
 			String parentIndex = Integer.toString(parent.getIndex());
 			String parentIdentifier = "";
 
-			if(type == 1 || type == 3)
-			{
+			if (type == 1 || type == 3) {
 				parentIdentifier = parentName;
-			}
-			else
-			{
+			} else {
 				parentIdentifier = "I" + parentIndex + "z" + parentName;
 			}
-			
+
 			int numberOfChildren = parent.getNumberOfChildren();
 			int numberOfItems = parent.getNumberOfItems();
-			
-			//graph skill-skill links
-			for(int j=0; j<numberOfChildren; j++)
-			{
+
+			// graph skill-skill links
+			for (int j = 0; j < numberOfChildren; j++) {
 				Skill child = parent.getChild(j);
 
 				String childName = child.getName();
 				String childIndex = Integer.toString(child.getIndex());
 				String childIdentifier = "";
 
-				if(type == 1 || type == 3)
-				{
+				if (type == 1 || type == 3) {
 					childIdentifier = childName;
-				}
-				else
-				{
+				} else {
 					childIdentifier = "I" + childIndex + "z" + childName;
 				}
 
-				if(edgeLabels)
-				{
+				if (edgeLabels) {
 					sb.append("{");
 					sb.append(parentIdentifier);
 					sb.append("->");
@@ -95,9 +84,7 @@ public class MathematicaGenerator
 					sb.append("\"");
 					sb.append("}");
 					sb.append(", ");
-				}
-				else
-				{
+				} else {
 					sb.append(parentIdentifier);
 					sb.append("->");
 					sb.append(childIdentifier);
@@ -107,26 +94,21 @@ public class MathematicaGenerator
 				edgeCount++;
 			}
 
-			//graph skill-item links
-			for(int j=0; j<numberOfItems; j++)
-			{
+			// graph skill-item links
+			for (int j = 0; j < numberOfItems; j++) {
 				Item item = parent.getItem(j);
 
 				String itemName = item.getName();
 				String itemIndex = Integer.toString(item.getIndex());
 				String itemIdentifier = "";
 
-				if(type == 1 || type == 3)
-				{
+				if (type == 1 || type == 3) {
 					itemIdentifier = itemName;
-				}
-				else
-				{
+				} else {
 					itemIdentifier = "I" + itemIndex + "z" + itemName;
 				}
 
-				if(edgeLabels)
-				{
+				if (edgeLabels) {
 					sb.append("{");
 					sb.append(parentIdentifier);
 					sb.append("->");
@@ -137,9 +119,7 @@ public class MathematicaGenerator
 					sb.append("\"");
 					sb.append("}");
 					sb.append(", ");
-				}
-				else
-				{
+				} else {
 					sb.append(parentIdentifier);
 					sb.append("->");
 					sb.append(itemIdentifier);
@@ -150,13 +130,10 @@ public class MathematicaGenerator
 			}
 		}
 
+		if (type < 2) {
 
-		if(type < 2)
-		{
-
-			//graph guess and slip links
-			for(int i=0; i<skillGraph.getNumberOfItems(); i++)
-			{
+			// graph guess and slip links
+			for (int i = 0; i < skillGraph.getNumberOfItems(); i++) {
 				Item item = skillGraph.getItem(i);
 				Guess guess = item.getGuess();
 				Slip slip = item.getSlip();
@@ -165,12 +142,9 @@ public class MathematicaGenerator
 				String itemIndex = Integer.toString(item.getIndex());
 				String itemIdentifier = "";
 
-				if(type == 1 || type == 3)
-				{
+				if (type == 1 || type == 3) {
 					itemIdentifier = itemName;
-				}
-				else
-				{
+				} else {
 					itemIdentifier = "I" + itemIndex + "z" + itemName;
 				}
 
@@ -178,12 +152,9 @@ public class MathematicaGenerator
 				String guessIndex = Integer.toString(guess.getIndex());
 				String guessIdentifier = "";
 
-				if(type == 1 || type == 3)
-				{
+				if (type == 1 || type == 3) {
 					guessIdentifier = guessName;
-				}
-				else
-				{
+				} else {
 					guessIdentifier = "I" + guessIndex + "z" + guessName;
 				}
 
@@ -191,18 +162,13 @@ public class MathematicaGenerator
 				String slipIndex = Integer.toString(slip.getIndex());
 				String slipIdentifier = "";
 
-				if(type == 1 || type == 3)
-				{
+				if (type == 1 || type == 3) {
 					slipIdentifier = slipName;
-				}
-				else
-				{
+				} else {
 					slipIdentifier = "I" + slipIndex + "z" + slipName;
 				}
 
-
-				if(edgeLabels)
-				{
+				if (edgeLabels) {
 					sb.append("{");
 					sb.append(guessIdentifier);
 					sb.append("->");
@@ -213,9 +179,7 @@ public class MathematicaGenerator
 					sb.append("\"");
 					sb.append("}");
 					sb.append(", ");
-				}
-				else
-				{
+				} else {
 					sb.append(guessIdentifier);
 					sb.append("->");
 					sb.append(itemIdentifier);
@@ -224,9 +188,7 @@ public class MathematicaGenerator
 
 				edgeCount++;
 
-
-				if(edgeLabels)
-				{
+				if (edgeLabels) {
 					sb.append("{");
 					sb.append(slipIdentifier);
 					sb.append("->");
@@ -237,9 +199,7 @@ public class MathematicaGenerator
 					sb.append("\"");
 					sb.append("}");
 					sb.append(", ");
-				}
-				else
-				{
+				} else {
 					sb.append(slipIdentifier);
 					sb.append("->");
 					sb.append(itemIdentifier);
@@ -250,55 +210,47 @@ public class MathematicaGenerator
 			}
 		}
 
-
-		if(sb.length() > 2)
-		{
-			sb.deleteCharAt(sb.length()-1);
-			sb.deleteCharAt(sb.length()-1);
+		if (sb.length() > 2) {
+			sb.deleteCharAt(sb.length() - 1);
+			sb.deleteCharAt(sb.length() - 1);
 		}
 
 		sb.append("}, ");
 		sb.append("VertexLabeling -> True]");
-		sb.append("\n");     
+		sb.append("\n");
 
 		return sb.toString();
 	}
 
-	private static String getEdgeLabel(int edgeCount)
-	{
+	private static String getEdgeLabel(int edgeCount) {
 		int alphabetSize = modifiedAlphabet.length;
 		String edgeLabel = "";
 		int start = edgeCount;
 
-		while(start > 0)
-		{
-			int symbolSpot = (start-1)%alphabetSize;
+		while (start > 0) {
+			int symbolSpot = (start - 1) % alphabetSize;
 			edgeLabel = modifiedAlphabet[symbolSpot].concat(edgeLabel);
-			start = (start - (symbolSpot+1)) / alphabetSize;
+			start = (start - (symbolSpot + 1)) / alphabetSize;
 		}
 
 		return edgeLabel;
 	}
 
-	public static void generateOutput(SkillGraph skillGraph, String filePath, int type, boolean edgeLabels)
-	{
-		if(type < 0 || type > 3)
-		{
+	public static void generateOutput(SkillGraph skillGraph, String filePath,
+			int type, boolean edgeLabels) {
+		if (type < 0 || type > 3) {
 			type = 3;
 		}
 
 		String outputString = getMathematicaString(skillGraph, type, edgeLabels);
 
-		try
-		{
+		try {
 			FileWriter fileWriter = new FileWriter(filePath, false);
-            
-			fileWriter.write(outputString);				
+
+			fileWriter.write(outputString);
 			fileWriter.flush();
 			fileWriter.close();
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(-1);
 		}

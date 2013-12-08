@@ -608,14 +608,14 @@ public class SkillGraph {
 		}
 	}
 
-	private void reIndexItems() {
-		Collections.sort(itemList);
-
-		for (int i = 0; i < itemList.size(); i++) {
-			Item item = itemList.get(i);
-			item.setIndex(i);
-		}
-	}
+	// private void reIndexItems() {
+	// Collections.sort(itemList);
+	//
+	// for (int i = 0; i < itemList.size(); i++) {
+	// Item item = itemList.get(i);
+	// item.setIndex(i);
+	// }
+	// }
 
 	/**
 	 * we should not hold the skill matrix as an array in this class since that
