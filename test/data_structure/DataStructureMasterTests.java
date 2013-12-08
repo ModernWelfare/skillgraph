@@ -7,31 +7,22 @@ import org.junit.Test;
 import util.RandomGraphGenerator;
 
 public class DataStructureMasterTests {
+	@Test
+	public void testGraphCreationNoError() {
+		SkillGraph graph = new SkillGraph("Example/SkillStructure1.csv",
+				"Example/ItemToSkillMapping1.txt", "Example/CPT_Ranges1.csv",
+				"Example/GuessAndSlipRanges1.txt");
+		System.out.println(graph.toString());
+		assertTrue(true);
+	}
+
 	// @Test
-	// public void testGraphCreationNoError() {
-	// SkillGraph graph = new SkillGraph("Example/SkillStructure1.csv",
-	// "Example/ItemToSkillMapping1.txt", "Example/CPT_Ranges1.csv",
-	// "Example/GuessAndSlipRanges1.txt");
-	// System.out.println(graph.toString());
-	// assertTrue(true);
+	// public void testSkillMatrixAlternatePath() {
+	// int[][] skillArray = { { 0, 1, 0, 1 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 },
+	// { 0, 0, 0, 0 } };
+	// assertTrue(!(new SkillMatrix(skillArray)).isFreeOfAlternatePath(0, 3));
+	// assertTrue((new SkillMatrix(skillArray)).isFreeOfAlternatePath(1, 2));
 	// }
-
-	@Test
-	public void rangeCreationWithString() {
-		Range r = new Range(".5-.7");
-		System.out.println(r.getLowerBound());
-		System.out.println(r.getUpperBound());
-		assertTrue(r.getLowerBound() == 0.5d);
-		assertTrue(r.getUpperBound() == 0.7d);
-	}
-
-	@Test
-	public void testSkillMatrixAlternatePath() {
-		int[][] skillArray = { { 0, 1, 0, 1 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 },
-				{ 0, 0, 0, 0 } };
-		assertTrue(!(new SkillMatrix(skillArray)).isFreeOfAlternatePath(0, 3));
-		assertTrue((new SkillMatrix(skillArray)).isFreeOfAlternatePath(1, 2));
-	}
 
 	// @Test
 	// public void getAllPossibleMerges() {
@@ -45,7 +36,8 @@ public class DataStructureMasterTests {
 
 	@Test
 	public void testRandomGraphGeneration() {
-		RandomGraphGenerator.generateRandomGraph(20, 30, 3, 5, 5, 10, "2");
+		int[] a = { 5, 10, 3, 4, 2, 4 };
+		RandomGraphGenerator.generateRandomGraph(a, "10");
 		assertTrue(true);
 	}
 
@@ -58,38 +50,34 @@ public class DataStructureMasterTests {
 		assertTrue(true);
 	}
 
-<<<<<<< HEAD
-=======
 	@Test
-	public void testCopying()
-	{
-		//copy the skill graph
-		//test they are equal
+	public void testCopying() {
+		// copy the skill graph
+		// test they are equal
 
-		//change name
-		//test that they are not equal
-		//test each name is correct
-		//change name back
-		//test that they ae equal
+		// change name
+		// test that they are not equal
+		// test each name is correct
+		// change name back
+		// test that they are equal
 
-		//change a skill link
-		//test that they are not equal
-		//test each link is correct
-		//change skill link back
-		//test that they ae equal
+		// change a skill link
+		// test that they are not equal
+		// test each link is correct
+		// change skill link back
+		// test that they are equal
 
-		//change an item link
-		//test that they are not equal
-		//test each item link is correct
-		//change item link back
-		//test that they are equal
+		// change an item link
+		// test that they are not equal
+		// test each item link is correct
+		// change item link back
+		// test that they are equal
 
-		//change a cpt table
-		//test that they are not equal
-		//test that they are correct
-		//change cpt table back
-		//test that they ae equal
-		
+		// change a cpt table
+		// test that they are not equal
+		// test that they are correct
+		// change cpt table back
+		// test that they ae equal
+
 	}
->>>>>>> 21b07e3429142da68f327b57f6416f6d98aec76b
 }
