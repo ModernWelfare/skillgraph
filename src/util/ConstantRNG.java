@@ -10,8 +10,7 @@ import java.util.Random;
  */
 public class ConstantRNG
 {
-	private static final int RANDOM_SEED = 3;
-	private static final Random random = new Random(RANDOM_SEED);
+	private static final Random random = new Random(Constants.RANDOM_SEED);
 
 	private ConstantRNG()
 	{
@@ -71,19 +70,5 @@ public class ConstantRNG
 		randomNumber = (Math.floor(randomNumber * 100)) / 100;
 
 		return randomNumber;
-	}
-	
-	/**
-	 * @param lowerBound
-	 * @param upperBound
-	 * @return
-	 */
-	public static int getNextNumberInteger(int lowerBound, double upperBound){
-		double randomNumber = getNextNumberRawU();
-		
-		randomNumber = (lowerBound + randomNumber * (upperBound - lowerBound));
-		
-		randomNumber = Math.floor(randomNumber + 0.5);
-		return (int)randomNumber;
 	}
 }

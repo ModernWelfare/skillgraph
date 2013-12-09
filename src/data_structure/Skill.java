@@ -24,9 +24,9 @@ public class Skill extends Node implements Comparable<Skill> {
 	 * @param n
 	 *            the name of the skill
 	 */
-	public Skill(int ix, String n)
+	public Skill(int ix, int nx, String n)
 	{
-		super(ix, n);
+		super(ix, nx, n);
 
 		children = new ArrayList<Skill>();
 		parents = new ArrayList<Skill>();
@@ -41,7 +41,7 @@ public class Skill extends Node implements Comparable<Skill> {
 	 */
 	public Skill(Skill oldSkill)
 	{
-		super(oldSkill.getIndex(), oldSkill.getName());
+		super(oldSkill.getIndex(), oldSkill.getNodeIndex(), oldSkill.getName());
 
 		children = new ArrayList<Skill>();
 		parents = new ArrayList<Skill>();
@@ -269,6 +269,7 @@ public class Skill extends Node implements Comparable<Skill> {
 
 	public Item removeItem(int itemIndex) {
 		Item item = items.remove(itemIndex);
+		item.setParent(null);
 		return item;
 	}
 
@@ -282,6 +283,8 @@ public class Skill extends Node implements Comparable<Skill> {
 		}
 
 		items.remove(item);
+		item.setParent(null);
+
 		return item;
 	}
 
@@ -404,6 +407,8 @@ public class Skill extends Node implements Comparable<Skill> {
 	{
 		StringBuilder sb = new StringBuilder();
 
+		sb.append("Node index = " + getNodeIndex());
+		sb.append("\n");
 		sb.append("Skill index = " + getIndex());
 		sb.append("\n");
 		sb.append("Skill name = " + getName());

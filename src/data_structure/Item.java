@@ -13,14 +13,14 @@ public class Item extends Node implements Comparable<Item>
 	private Guess guess;
 	private Slip slip;
 
-	public Item(int ix, String n)
+	public Item(int ix, int nx, String n)
 	{
-		super(ix, n);
+		super(ix, nx, n);
 	}
 
 	public Item(Item otherItem)
 	{
-		super(otherItem.getIndex(), otherItem.getName());
+		super(otherItem.getIndex(), otherItem.getNodeIndex(), otherItem.getName());
 		cptTable = new CPT(otherItem.getCPTTable());
 	}
 
@@ -106,8 +106,7 @@ public class Item extends Node implements Comparable<Item>
 
 		return sb.toString();
 	}
-
-
+	
 	@Override
 	public boolean equals(Object otherItem)
 	{
@@ -163,6 +162,8 @@ public class Item extends Node implements Comparable<Item>
 	{
 		StringBuilder sb = new StringBuilder();
 
+		sb.append("Node index = " + getNodeIndex());
+		sb.append("\n");
 		sb.append("Item index = " + getIndex());
 		sb.append("\n");
 		sb.append("Item name = " + getName());

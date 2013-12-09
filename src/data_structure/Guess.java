@@ -11,14 +11,14 @@ public class Guess extends Node implements Comparable<Guess>
 {
 	private Item item;
 
-	public Guess(int index, String name)
+	public Guess(int ix, int nx, String n)
 	{
-		super(index, name);
+		super(ix, nx, n);
 	}
 
 	public Guess(Guess otherGuess)
 	{
-		super(otherGuess.getIndex(), otherGuess.getName());
+		super(otherGuess.getIndex(), otherGuess.getNodeIndex(), otherGuess.getName());
 		//item = new Item(otherGuess.getItem());
 		cptTable = new CPT(otherGuess.getCPTTable());
 	}
@@ -125,6 +125,8 @@ public class Guess extends Node implements Comparable<Guess>
 	{
 		StringBuilder sb = new StringBuilder();
 
+		sb.append("Node index = " + getNodeIndex());
+		sb.append("\n");
 		sb.append("Guess index = " + getIndex());
 		sb.append("\n");
 		sb.append("Guess name = " + getName());

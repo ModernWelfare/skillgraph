@@ -11,14 +11,14 @@ public class Slip extends Node implements Comparable<Slip>
 {
 	private Item item;
 
-	public Slip(int index, String name)
+	public Slip(int ix, int nx, String n)
 	{
-		super(index, name);
+		super(ix, nx, n);
 	}
 
 	public Slip(Slip otherSlip)
 	{
-		super(otherSlip.getIndex(), otherSlip.getName());
+		super(otherSlip.getIndex(), otherSlip.getNodeIndex(), otherSlip.getName());
 		cptTable = new CPT(otherSlip.getCPTTable());
 	}
 
@@ -127,9 +127,11 @@ public class Slip extends Node implements Comparable<Slip>
 	{
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("Slip index = " + index);
+		sb.append("Node index = " + getNodeIndex());
 		sb.append("\n");
-		sb.append("Slip name = " + name);
+		sb.append("Slip index = " + getIndex());
+		sb.append("\n");
+		sb.append("Slip name = " + getName());
 		sb.append("\n");
 		sb.append("Item name = " + item.getName());
 		sb.append("\n");
