@@ -1,5 +1,6 @@
 package util;
 
+import java.math.BigInteger;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
@@ -124,158 +125,120 @@ public class RandomGraphGenerator
 
 		return returnValue;
 	}
-
-			
-
-	/**
-	 *for each number of nodes
-	 *	rank the nodes
-	 *	an edge cannot be drawn from higher rank to lower rank
-	 *	that eliminates isomorphisms
-	 *	
-	 *iteration0 = start with unconnected graph with rankes nodes [save this graph, I=0]
-	 *iteration1 (edge number) = generate all possible graphs with one edge [save these graphs, I=2]
-	 *iteration2 (edge number) = for each saves graph of the previous iteration - generate all possible graphs with one more edge [save these graphs]
-	 *repeat until no more edges can be drawn
-	 *
-	 *no cycle check needed
-	 *connected check
-	 *level check
-	 *
-	 *choose one of the graphs randomly
-	*/
+	
 	public static int[][] makeRandomMatrix(int skillNumLowerBound, int skillNumUpperBound, int numberOfLevelsLowerBound, int numberOfLevelsUpperBound)
 	{
-		//generate all possible matrices
-		//remove duplicates
-		//remove ones that fail check
-		//pick one randomly
-		//return that one
+		//store the number of possible graphs for each skill
+		BigInteger[] possibleGraphs = new BigInteger[(skillNumUpperBound - skillNumLowerBound)+1];
+		BigInteger[] skillIndices = new BigInteger[(skillNumUpperBound - skillNumLowerBound)+1];
+		BigInteger maxNumber = new BigInteger("-1");
 
+		int randomMatrix[][] = {{-1, -1}, {-1, -1}};
 
-		//array list to hold all generated skill matrices
-		//this initialization of array lists of generic primitives compiles (not exactly sure why)
-		List<int[][]> allSkillMatrices = new ArrayList<int[][]>();
-		List<int[][]> allValidSkillMatrices = new ArrayList<int[][]>();
-
-
-		//for each number of skills generate all possible matrices
-		for(int i=skillNumLowerBound; i<=skillNumUpperBound; i++)
+		for(int i=0; i<possibleGraphs.length; i++)
 		{
-			//holds all skill matrices generated for a specific number of skills
-			List<int[][]> iterationSkillMatrices = new ArrayList<int[][]>();
+			int numberOfSkills = skillNumLowerBound + i;
+			int variableSpots = ((numberOfSkills-1) * numberOfSkills) / 2;
+			BigInteger numberOfGraphs = new BigInteger("2");
 
-			int[][] skillMatrix = new int[i][i];
-			int numberOfSkills = skillMatrix.length;
+			possibleGraphs[i] = numberOfGraphs.pow(variableSpots);
 
-			// start with a disconnected graph
-			for(int j=0; j<numberOfSkills; j++)
+			if(i == 0)
 			{
-				for(int k=0; k<numberOfSkills; k++)
+				skillIndices[i] = new BigInteger("0");
+			}
+			else
+			{
+				skillIndices[i] = skillIndices[i-1].add(possibleGraphs[i-1]);
+			}
+		}
+
+		maxNumber = skillIndices[skillIndices.length-1].add(possibleGraphs[possibleGraphs.length-1]);
+
+		boolean foundValidMatrix = false;
+
+		while(!foundValidMatrix)
+		{
+			//choose a random number
+			//construct the graph
+			//check the graph
+
+			int numberOfBits = ((skillNumUpperBound-1) * skillNumUpperBound) / 2;
+			BigInteger randomNumber = new BigInteger(numberOfBits, ConstantRNG.getRNG());
+
+			//get random value in range
+			while(randomNumber.compareTo(maxNumber) == 1)
+			{
+				randomNumber = new BigInteger(numberOfBits, ConstantRNG.getRNG());
+			}
+
+			//construct the graph given the bigint
+
+			//figure out the number of skills
+
+			int size = skillNumUpperBound;
+
+			for(int i=0; i<skillIndices.length-1; i++)
+			{
+				if(randomNumber.compareTo(skillIndices[i]) >= 0 && randomNumber.compareTo(skillIndices[i+1]) < 0)
 				{
-					skillMatrix[j][k] = 0;
+					size = skillNumLowerBound + i;
 				}
 			}
 
-			//holds skill matrices for the previous and current number of edges in the graph
-			List<int[][]> previousEdgeMatrices = new ArrayList<int[][]>();
-			List<int[][]> edgeSkillMatrices = new ArrayList<int[][]>();
+			//convert to string and add correct leading number of zeros
 
-			iterationSkillMatrices.add(skillMatrix);
-			previousEdgeMatrices.add(skillMatrix);
+			String bitString = randomNumber.toString(2);
 
-			while(!previousEdgeMatrices.isEmpty())
+			while(bitString.length() < numberOfBits)
 			{
-				//for all skill graphs with a number of edges, add one more edge in all possible ways
-				for(int j=0; j<previousEdgeMatrices.size(); j++)
-				{
-					int[][] currentSkillMatrix = previousEdgeMatrices.get(j);
+				bitString = "0".concat(bitString);
+			}
 
-					for(int k=0; k<numberOfSkills-1; k++)
+			randomMatrix = new int[size][size];
+			int stringSpot = 0;
+
+//System.out.println("Random number = " + randomNumber);
+//System.out.println("Bit string = " + bitString);
+//System.out.println("Size = " + size);
+
+			//exlude last row
+			for(int i=0; i<size-1; i++)
+			{
+				for(int j=i+1; j<size; j++)
+				{
+					//exclude first column and diagonal
+					if(i != j && j != 0)
 					{
-						for(int l=k+1; l<numberOfSkills; l++)
-						{
-							if(currentSkillMatrix[k][l] == 0)
-							{
-								int[][] newSkillMatrix = GraphFunctions.matrixCopy(currentSkillMatrix);
-								newSkillMatrix[k][l] = 1;
-								edgeSkillMatrices.add(newSkillMatrix);
-								iterationSkillMatrices.add(newSkillMatrix);
-							}
-						}
+						randomMatrix[i][j] = Integer.parseInt(Character.toString(bitString.charAt(stringSpot)));
+						stringSpot++;
 					}
 				}
-
-				//copy current to previous and repeat
-
-				previousEdgeMatrices.clear();
-
-				while(!edgeSkillMatrices.isEmpty())
-				{
-					previousEdgeMatrices.add(edgeSkillMatrices.remove(0));
-				}
 			}
 
-			//remove duplicates from iteration, sort + iterate
-			//add to whole
-
-			sortMatrices(iterationSkillMatrices);
-
-			int[][] previous = iterationSkillMatrices.get(0);
-
-			for(int j=0; j<iterationSkillMatrices.size(); j++)
+			if(GraphFunctions.isMatrixConnected(randomMatrix) && GraphFunctions.isLevelInRange(randomMatrix, numberOfLevelsLowerBound, numberOfLevelsUpperBound))
 			{
-				int[][] current = iterationSkillMatrices.get(j);
-
-				if(compareMatrices(previous, current) != 0 || j == 0)
-				{
-					allSkillMatrices.add(current);
-				}
-
-				previous = current;
+				foundValidMatrix = true;
 			}
-
-			//System.out.println("Number ofiteration  graphs = " + iterationSkillMatrices.size());
 		}
 
-		//check all and remove failed checks
+		return randomMatrix;
+	}
+	
 
-		//System.out.println("Number of graphs = " + allSkillMatrices.size());
+	private static boolean containsSkillMatrix(final List<int[][]> iterationSkillMatrices, int[][] newSkillMatrix)
+	{
+		boolean returnValue = false;
 
-		for(int j=0; j<allSkillMatrices.size(); j++)
+		for(int i=0; i<iterationSkillMatrices.size() && !returnValue; i++)
 		{
-			int[][] currentSkillMatrix = allSkillMatrices.get(j);
-
-			if(GraphFunctions.isMatrixConnected(currentSkillMatrix) && GraphFunctions.isLevelInRange(currentSkillMatrix, numberOfLevelsLowerBound, numberOfLevelsUpperBound))
+			if(compareMatrices(iterationSkillMatrices.get(i), newSkillMatrix) == 0)
 			{
-				allValidSkillMatrices.add(currentSkillMatrix);
+				returnValue = true;
 			}
 		}
-		
 
-		/*
-		for(int i=0; i<allSkillMatrices.size(); i++)
-		{
-			System.out.println("Matrix " + i);
-			GraphFunctions.printSkillMatrix(allSkillMatrices.get(i));
-		}
-		*/
-
-		/*
-		for(int i=0; i<allValidSkillMatrices.size(); i++)
-		{
-			System.out.println("Matrix " + i);
-			GraphFunctions.printSkillMatrix(allValidSkillMatrices.get(i));
-		}
-		*/
-
-		//choose and return random one
-		
-		int randomGraphIndex = ConstantRNG.getNextInt(0, allValidSkillMatrices.size()-1);
-
-		//GraphFunctions.printSkillMatrix(allValidSkillMatrices.get(randomGraphIndex));
-
-		return allValidSkillMatrices.get(randomGraphIndex);
+		return returnValue;
 	}
 
 	private static void sortMatrices(List<int[][]> iterationSkillMatrices)

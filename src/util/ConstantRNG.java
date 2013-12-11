@@ -17,6 +17,11 @@ public class ConstantRNG
 		//
 	}
 
+	public static Random getRNG()
+	{
+		return random;
+	}
+
 	public static double getNextNumberRawU()
 	{
 		return random.nextDouble();
