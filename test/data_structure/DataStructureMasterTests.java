@@ -13,7 +13,7 @@ public class DataStructureMasterTests {
 				"Example/ItemToSkillMapping1.txt", "Example/CPT_Ranges1.csv",
 				"Example/GuessAndSlipRanges1.txt");
 		System.out.println(graph.toString());
-		MatlabFileWriter.outPutSkillGraphMatlabFile(graph, "graph1.m");
+		MatlabFileWriter.outPutSkillGraphMatlabFile(graph, 1, "graph1.m");
 		assertTrue(true);
 	}
 

@@ -25,12 +25,15 @@ public class MainProgram {
 
 		try {
 			// run the matlab command on a new process
-			Process p = Runtime
-					.getRuntime()
-					.exec("matlab -nodisplay -wait -nosplash -nodesktop -r run('script')");
+			Process p = Runtime.getRuntime().exec(
+					"matlab -nodisplay -wait -nosplash -nodesktop -r \"cd bnt; "
+							+ "addpath(genpathKPM(pwd)); "
+							+ "cd ../matlab_scripts; "
+							+ "run CreateDLMObject; " + "run Evaluation1; "
+							+ "exit;\"");
 			System.out.println("matlab command entered");
 			p.waitFor();
-			// do something when the command has been executed
+			// do something when the command has been execute d
 			System.out.println("matlab command completed");
 		} catch (InterruptedException | IOException ex) {
 			// print stack trace and exit

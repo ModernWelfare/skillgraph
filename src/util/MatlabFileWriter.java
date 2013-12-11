@@ -4,9 +4,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.List;
 
+import data_structure.Guess;
 import data_structure.Item;
 import data_structure.Skill;
 import data_structure.SkillGraph;
+import data_structure.Slip;
 
 /**
  * Function to build the matlab file representation of the skill graph
@@ -22,7 +24,7 @@ public class MatlabFileWriter {
 	private final static String OUTPUT_DIR = "matlab_graphs";
 
 	public static void outPutSkillGraphMatlabFile(SkillGraph graph,
-			String fileName) {
+			int graphNumber, String fileName) {
 		// set up the directory and the filePath
 		File dir = new File(OUTPUT_DIR);
 
@@ -34,7 +36,8 @@ public class MatlabFileWriter {
 		StringBuilder output = new StringBuilder();
 
 		// get the values of variables used in matlab file generation
-		int N = graph.getNumberOfSkills() + graph.getNumberOfItems();
+		int N = graph.getNumberOfSkills() + graph.getNumberOfItems()
+				+ graph.getNumberOfGuesses() + graph.getNumberOfSlips();
 
 		// write the first common part;
 
@@ -44,11 +47,29 @@ public class MatlabFileWriter {
 
 		// output the total number of nodes
 		output.append("N = " + Integer.toString(N) + ";\n");
+		output.append("numberOfItems = "
+				+ Integer.toString(graph.getNumberOfItems()) + ";\n");
+		output.append("numberOfSkills = "
+				+ Integer.toString(graph.getNumberOfSkills()) + ";\n");
 
 		// output the names and indices of the skills
 		output.append("% variable names for the skills in the graph. In this model we have only five skills. We could have several.\n");
 		int index = 1;
 		for (Skill s : graph.getSkillList()) {
+			output.append(s.getName() + " = " + Integer.toString(index) + ";\n");
+			index++;
+		}
+
+		// output the names and indices of the guesses
+		output.append("% variable names for the guesses in the graph.\n");
+		for (Guess g : graph.getGuessList()) {
+			output.append(g.getName() + " = " + Integer.toString(index) + ";\n");
+			index++;
+		}
+
+		// output the names and indices of the slips
+		output.append("% variable names for the slips in the graph. \n");
+		for (Slip s : graph.getSlipList()) {
 			output.append(s.getName() + " = " + Integer.toString(index) + ";\n");
 			index++;
 		}
@@ -65,7 +86,6 @@ public class MatlabFileWriter {
 		output.append("dag = zeros(N,N);\n");
 
 		// output the skill matrix
-		int[][] skillMatrix = graph.generateSkillMatrix();
 		List<Skill> skillList = graph.getSkillList();
 
 		output.append("% the following represent the links between the skill nodes\n");
@@ -75,6 +95,22 @@ public class MatlabFileWriter {
 				output.append("dag(" + parentSkill.getName() + ","
 						+ childSkill.getName() + ") = 1;\n");
 			}
+		}
+
+		// output the guess to item mapping
+		output.append("% the following represent the links between the guess and item nodes\n");
+
+		for (Guess g : graph.getGuessList()) {
+			output.append("dag(" + g.getName() + "," + g.getItem().getName()
+					+ ") = 1;\n");
+		}
+
+		// output the slip to item mapping
+		output.append("% the following represent the links between the slip and item nodes\n");
+
+		for (Slip s : graph.getSlipList()) {
+			output.append("dag(" + s.getName() + "," + s.getItem().getName()
+					+ ") = 1;\n");
 		}
 
 		// output the item to skill mapping
