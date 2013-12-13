@@ -21,7 +21,7 @@ import data_structure.Slip;
  * 
  */
 public class MatlabFileWriter {
-	private final static String OUTPUT_DIR = "matlab_graphs";
+	private final static String OUTPUT_DIR = "matlab_scripts";
 
 	public static void outPutSkillGraphMatlabFile(SkillGraph graph,
 			int graphNumber, String fileName) {
@@ -42,7 +42,7 @@ public class MatlabFileWriter {
 		// write the first common part;
 
 		output.append("%The fucntion name should correspond to the name of the file. Please remember to make it match the model and iteration numbers\n");
-		output.append("function bnet = sampleDag()\n");
+		output.append("function [bnet, UID] = sampleDag()\n");
 		output.append("% the total number of nodes in the model. This should be the sum of the skill and item nodes\n");
 
 		// output the total number of nodes
@@ -51,6 +51,7 @@ public class MatlabFileWriter {
 				+ Integer.toString(graph.getNumberOfItems()) + ";\n");
 		output.append("numberOfSkills = "
 				+ Integer.toString(graph.getNumberOfSkills()) + ";\n");
+		output.append("UID = " + Integer.toString(graphNumber) + ";\n");
 
 		// output the names and indices of the skills
 		output.append("% variable names for the skills in the graph. In this model we have only five skills. We could have several.\n");
@@ -129,11 +130,13 @@ public class MatlabFileWriter {
 
 		// output the equivalence class info for nodes with no parents
 
-		for (Skill s : skillList) {
-			if (s.getParents().isEmpty()) {
-				output.append("eclass(" + s.getName() + ") = 1;\n");
-			}
-		}
+		// for (Skill s : skillList) {
+		// if (s.getParents().isEmpty()) {
+		// output.append("eclass(" + s.getName() + ") = 1;\n");
+		// }
+		// }
+
+		output.append("eclass = 1:N;\n");
 
 		// output the info for observed variables
 		output.append("% observed variables. This should correspond to the item nodes.\n");
@@ -148,6 +151,23 @@ public class MatlabFileWriter {
 
 		// make the bayes net
 		output.append("bnet = mk_bnet(dag,node_sizes,'discrete',discrete_nodes,'observed',obs,'equiv_class',eclass);\n");
+
+		// output the cpt table
+		for (Skill s : graph.getSkillList()) {
+			output.append(s.convertCPTToMatlab(false));
+		}
+
+		for (Guess g : graph.getGuessList()) {
+			output.append(g.convertCPTToMatlab(false));
+		}
+
+		for (Slip s : graph.getSlipList()) {
+			output.append(s.convertCPTToMatlab(false));
+		}
+
+		for (Item i : graph.getItemList()) {
+			output.append(i.convertCPTToMatlab(false));
+		}
 
 		writeFile(filePath, output.toString());
 	}

@@ -14,7 +14,7 @@ RandStream.setGlobalStream(s);
 load dlmObject.mat;
 load bnet.mat;
 
-filename = '../results/results1.txt';
+filename = '../results/results.txt';
  
 results = fopen(filename,'w');
 

@@ -5,15 +5,16 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import util.MatlabFileWriter;
+import util.RandomGraphGenerator;
 
 public class DataStructureMasterTests {
 	@Test
 	public void testGraphCreationNoError() {
-		SkillGraph graph = new SkillGraph("Example/SkillStructure1.csv",
-				"Example/ItemToSkillMapping1.txt", "Example/CPT_Ranges1.csv",
-				"Example/GuessAndSlipRanges1.txt");
+		SkillGraph graph = new SkillGraph("10/SkillGraph.csv",
+				"10/ItemToSkillMapping.csv", "Example/CPT_Ranges1.csv",
+				"10/GuessAndSlipRanges.csv");
 		System.out.println(graph.toString());
-		MatlabFileWriter.outPutSkillGraphMatlabFile(graph, 1, "graph1.m");
+		MatlabFileWriter.outPutSkillGraphMatlabFile(graph, 2, "sampleDag.m");
 		assertTrue(true);
 	}
 
@@ -35,12 +36,13 @@ public class DataStructureMasterTests {
 	// assertTrue(true);
 	// }
 
-	// @Test
-	// public void testRandomGraphGeneration() {
-	// int[] a = { 5, 10, 3, 4, 2, 4 };
-	// RandomGraphGenerator.generateRandomGraph(a, "10");
-	// assertTrue(true);
-	// }
+	@Test
+	public void testRandomGraphGeneration() {
+		int[] a = { 2, 4, 1, 2, 1, 3 };
+		RandomGraphGenerator.generateRandomGraph(a, "10");
+		assertTrue(true);
+	}
+
 	//
 	// @Test
 	// public void testGraphCreationFromGeneratedDataNoError() {
