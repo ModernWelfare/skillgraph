@@ -2,8 +2,13 @@ package data_structure;
 
 import static org.junit.Assert.assertTrue;
 
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 
+import util.GraphFunctions;
 import util.MatlabFileWriter;
 import util.RandomGraphGenerator;
 
@@ -55,32 +60,20 @@ public class DataStructureMasterTests {
 
 	@Test
 	public void testCopying() {
-		// copy the skill graph
-		// test they are equal
+		SkillGraph graph = new SkillGraph("10/SkillGraph.csv",
+				"10/ItemToSkillMapping.csv", "Example/CPT_Ranges1.csv",
+				"10/GuessAndSlipRanges.csv");
+		List<Point> possibleMerges = GraphFunctions.getAllPossibleMerges(graph);
+		List<SkillGraph> mergedGraphs = new ArrayList<SkillGraph>();
 
-		// change name
-		// test that they are not equal
-		// test each name is correct
-		// change name back
-		// test that they are equal
-
-		// change a skill link
-		// test that they are not equal
-		// test each link is correct
-		// change skill link back
-		// test that they are equal
-
-		// change an item link
-		// test that they are not equal
-		// test each item link is correct
-		// change item link back
-		// test that they are equal
-
-		// change a cpt table
-		// test that they are not equal
-		// test that they are correct
-		// change cpt table back
-		// test that they ae equal
+		for (Point p : possibleMerges) {
+			// first create a fresh copy of the original graph
+			SkillGraph mergedGraph = new SkillGraph(graph);
+			// perform the merge
+			mergedGraph.mergeSkills(p.x, p.y);
+			mergedGraphs.add(mergedGraph);
+		}
+		assertTrue(true);
 
 	}
 }
