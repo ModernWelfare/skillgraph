@@ -9,19 +9,18 @@ import java.util.List;
 import org.junit.Test;
 
 import util.GraphFunctions;
-import util.MatlabFileWriter;
 import util.RandomGraphGenerator;
 
 public class DataStructureMasterTests {
-	@Test
-	public void testGraphCreationNoError() {
-		SkillGraph graph = new SkillGraph("10/SkillGraph.csv",
-				"10/ItemToSkillMapping.csv", "Example/CPT_Ranges1.csv",
-				"10/GuessAndSlipRanges.csv");
-		System.out.println(graph.toString());
-		MatlabFileWriter.outPutSkillGraphMatlabFile(graph, 2, "sampleDag.m");
-		assertTrue(true);
-	}
+	// @Test
+	// public void testGraphCreationNoError() {
+	// SkillGraph graph = new SkillGraph("10/SkillGraph.csv",
+	// "10/ItemToSkillMapping.csv", "Example/CPT_Ranges1.csv",
+	// "10/GuessAndSlipRanges.csv");
+	// System.out.println(graph.toString());
+	// MatlabFileWriter.outPutSkillGraphMatlabFile(graph, 2, "sampleDag.m");
+	// assertTrue(true);
+	// }
 
 	// @Test
 	// public void testSkillMatrixAlternatePath() {
@@ -43,7 +42,7 @@ public class DataStructureMasterTests {
 
 	@Test
 	public void testRandomGraphGeneration() {
-		int[] a = { 2, 4, 1, 2, 1, 3 };
+		int[] a = { 2, 4, 3, 4, 1, 3 };
 		RandomGraphGenerator.generateRandomGraph(a, "10");
 		assertTrue(true);
 	}
@@ -74,6 +73,14 @@ public class DataStructureMasterTests {
 			mergedGraphs.add(mergedGraph);
 		}
 		assertTrue(true);
+	}
 
+	@Test
+	public void testFakeGraph() {
+		SkillGraph graph = new SkillGraph("10/SkillGraph.csv",
+				"10/ItemToSkillMapping.csv", "Example/CPT_Ranges1.csv",
+				"10/GuessAndSlipRanges.csv");
+		graph.generateFakeSkill();
+		graph.generateGraphFiles("11");
 	}
 }
