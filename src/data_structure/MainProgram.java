@@ -1,6 +1,7 @@
 package data_structure;
 
 import java.awt.Point;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,16 +15,48 @@ public class MainProgram {
 	// list of strings to hold the results from matlab evaluations
 
 	public static void main(String args[]) {
+		// name of the folder to contain all info of a certain graph
+		String graphName = "test_graph";
+
+		// create the dir if it doesn't exist
+		File dir = new File(graphName);
+
+		if (!dir.exists()) {
+			dir.mkdir();
+		}
+
 		// initialize the evaluation result list
 		// generates the random graph
-		int[] a = { 2, 4, 1, 2, 1, 3 };
-		RandomGraphGenerator.generateRandomGraph(a, "test_graph");
+		int[] a = { 1, 3, 2, 3, 1, 3 };
+		RandomGraphGenerator.generateRandomGraph(a, "test_graph/ground_truth");
 
-		SkillGraph graph = new SkillGraph("test_graph/SkillGraph.csv",
-				"test_graph/ItemToSkillMapping.csv", "Example/CPT_Ranges1.csv",
-				"test_graph/GuessAndSlipRanges.csv");
+		SkillGraph graph = new SkillGraph(
+				"test_graph/ground_truth/SkillGraph.csv",
+				"test_graph/ground_truth/ItemToSkillMapping.csv",
+				"Example/CPT_Ranges1.csv",
+				"test_graph/ground_truth/GuessAndSlipRanges.csv");
 
-		selectBestMergedGraph(graph);
+		graph.generateFakeSkill();
+
+		graph.generateGraphFiles("test_graph/fake_graph");
+
+		// get the number of evaluation iterations
+		int iterationNum = graph.getNumberOfSkills() - 1;
+		// set the current graph we're working with
+		SkillGraph currentGraph = graph;
+		for (int i = 0; i < iterationNum; i++) {
+			String iterationNumber = "Iteration_" + Integer.toString(i + 1);
+
+			// make the iteration directory
+			File iterationDir = new File(graphName + "/" + iterationNumber);
+
+			if (!iterationDir.exists()) {
+				iterationDir.mkdirs();
+			}
+			currentGraph = selectBestMergedGraph(currentGraph, graphName + "/"
+					+ iterationNumber);
+			currentGraph.generateGraphFiles(iterationDir + "/best_graph");
+		}
 	}
 
 	/**
@@ -33,7 +66,8 @@ public class MainProgram {
 	 *            the graph to be merged
 	 * @return the best performing merged graph
 	 */
-	private static SkillGraph selectBestMergedGraph(SkillGraph graph) {
+	private static SkillGraph selectBestMergedGraph(SkillGraph graph,
+			String iterationDir) {
 		// if the graph has only one skill, simply return the given graph
 		if (graph.getNumberOfSkills() == 1) {
 			return graph;
@@ -45,11 +79,16 @@ public class MainProgram {
 		List<Point> possibleMerges = GraphFunctions.getAllPossibleMerges(graph);
 		List<SkillGraph> mergedGraphs = new ArrayList<SkillGraph>();
 
+		graph.generateGraphFiles(iterationDir + "/starting_graph");
+
 		for (Point p : possibleMerges) {
 			// first create a fresh copy of the original graph
 			SkillGraph mergedGraph = new SkillGraph(graph);
 			// perform the merge
 			mergedGraph.mergeSkills(p.x, p.y);
+			// outputs the merged graphs
+			mergedGraph.generateGraphFiles(iterationDir + "/"
+					+ Integer.toString(possibleMerges.indexOf(p)));
 			mergedGraphs.add(mergedGraph);
 		}
 
