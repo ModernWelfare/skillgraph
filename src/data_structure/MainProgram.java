@@ -2,6 +2,7 @@ package data_structure;
 
 import java.awt.Point;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,7 @@ public class MainProgram {
 
 		// initialize the evaluation result list
 		// generates the random graph
-		int[] a = { 1, 3, 2, 3, 1, 3 };
+		int[] a = { 2, 3, 2, 3, 1, 3 };
 		RandomGraphGenerator.generateRandomGraph(a, "test_graph/ground_truth");
 
 		SkillGraph graph = new SkillGraph(
@@ -100,7 +101,20 @@ public class MainProgram {
 
 		selectedIndex = selectBestResultIndex(matlabResults);
 
+		printResults(iterationDir, matlabResults, selectedIndex);
+
 		return mergedGraphs.get(selectedIndex);
+	}
+
+	private static void printResults(String iterationDir,
+			List<String> matlabResults, int selectedIndex) {
+		String filePath = iterationDir + "/results.txt";
+		StringBuilder sb = new StringBuilder();
+		for (String s : matlabResults) {
+			sb.append(s);
+		}
+		sb.append("Selected index: " + Integer.toString(selectedIndex) + "\n");
+		writeFile(filePath, sb.toString());
 	}
 
 	/**
@@ -111,8 +125,19 @@ public class MainProgram {
 	 * @return the index of the best result string
 	 */
 	private static int selectBestResultIndex(List<String> matlabResults) {
-		// function to be implemented by Doug
-		return 0;
+		int minIndex = 0;
+		float smallestRMSE = Float.MAX_VALUE;
+
+		for (int i = 0; i < matlabResults.size(); i++) {
+			String s = matlabResults.get(i);
+			float rmse = Float.parseFloat(s.split(" ")[2]);
+			if (rmse < smallestRMSE) {
+				smallestRMSE = rmse;
+			}
+			minIndex = i;
+		}
+
+		return minIndex;
 	}
 
 	/**
@@ -149,5 +174,18 @@ public class MainProgram {
 			System.exit(-1);
 		}
 		return null;
+	}
+
+	private static void writeFile(String filePath, String outputString) {
+		try {
+			FileWriter file = new FileWriter(filePath, false);
+
+			file.write(outputString);
+			file.flush();
+			file.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(-1);
+		}
 	}
 }

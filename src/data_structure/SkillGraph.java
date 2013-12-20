@@ -595,7 +595,7 @@ public class SkillGraph {
 		Skill newSkill = new Skill(oldSkill);
 
 		newSkill.setIndex(getSkillList().size());
-		newSkill.setName(oldSkill.getName() + "-split-" + newSkill.getIndex());
+		newSkill.setName(oldSkill.getName() + "_split_" + newSkill.getIndex());
 
 		// Split the items up between the two skills
 		for (int i = 0; i < cutPoint; i++) {
