@@ -51,9 +51,10 @@ folds = zeros(numberOfStudents, numberOfItems, 2);
 
 %set the responses, student folds and item folds
 for i=1:numberOfStudents
+    studentFold = round(1 + (numberOfStudentFolds-1).*rand(1,1));
     for j=1:numberOfItems
         responses(i, j) = data(i, j);
-        folds(i, j, 1) = round(1 + (numberOfStudentFolds-1).*rand(1,1));
+        folds(i, j, 1) = studentFold;
         folds(i, j, 2) = round(1 + (numberOfItemFolds-1).*rand(1,1));
     end
 end

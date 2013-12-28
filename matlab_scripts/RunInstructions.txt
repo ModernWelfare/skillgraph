@@ -1,0 +1,47 @@
+To Run (one iteration)
+
+1.  Run GenerateDataFromDag to generate the network
+2.  Run CreateDLMObject to generate data from the network
+
+dlmObject.mat and bnet.mat created
+Copy those files into the Evaluation folder
+
+
+3.  Run "run1.m" to evaluate
+
+
+-Files to look at when changing graphs (or anything)
+	run1.m
+	CreateDLMObject
+	CreateNetwork
+
+
+-----------------------------------------
+
+
+
+
+
+
+
+To Run (one iteration)
+
+Run CreateDLMObject.m
+	-this expects a the sampleDag.m file to be created
+	-this calls sampleDag
+	-this calls GenerateDataFromDag
+
+dlmObject.mat and bnet.mat created
+Copy those files into the Evaluation folder
+
+
+3.  Run "run1.m" to evaluate
+
+
+-Files to look at when changing graphs (or anything)
+	run1.m
+	CreateDLMObject
+	CreateNetwork
+
+
+-----------------------------------------
