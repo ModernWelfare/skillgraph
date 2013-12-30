@@ -1,6 +1,7 @@
 package util;
 
 import java.awt.Point;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -15,8 +16,10 @@ import data_structure.SkillGraph;
  * @author Douglas Selent
  * 
  */
-public class GraphFunctions {
-	private GraphFunctions() {
+public class GraphFunctions
+{
+	private GraphFunctions()
+	{
 	}
 
 	/**
@@ -24,26 +27,34 @@ public class GraphFunctions {
 	 * 
 	 * @return a list of Points of the two skill indices that can be merged
 	 */
-	public static List<Point> getAllPossibleMerges(final SkillGraph skillGraph) {
+	public static List<Point> getAllPossibleMerges(final SkillGraph skillGraph)
+	{
 		int numberOfSkills = skillGraph.getNumberOfSkills();
 		int[][] skillMatrix = skillGraph.generateSkillMatrix();
 		List<Point> possibleMerges = new ArrayList<Point>();
 
 		// i = parent, j = child
-		for (int i = 0; i < numberOfSkills; i++) {
-			for (int j = 0; j < numberOfSkills; j++) {
-				if (skillMatrix[i][j] == 1) {
-					if (i == j) {
+		for(int i=0; i<numberOfSkills; i++)
+		{
+			for (int j=0; j<numberOfSkills; j++)
+			{
+				if(skillMatrix[i][j] == 1)
+				{
+					if(i == j)
+					{
 						System.err.println("Self cycle detected");
 						System.out.println("Skill index = " + i);
 						System.exit(-1);
-					} else {
+					}
+					else
+					{
 						SkillGraph skillGraph2 = new SkillGraph(skillGraph);
 						skillGraph2.mergeSkills(i, j);
 
 						boolean cycles = cycleTest(skillGraph2);
 
-						if (!cycles) {
+						if(!cycles)
+						{
 							Point mergePair = new Point(i, j);
 							possibleMerges.add(mergePair);
 						}
@@ -57,12 +68,15 @@ public class GraphFunctions {
 
 	// copies matrix
 	// assumes square matrix
-	public static int[][] matrixCopy(final int otherMatrix[][]) {
+	public static int[][] matrixCopy(final int otherMatrix[][])
+	{
 		int size = otherMatrix.length;
 		int[][] newMatrix = new int[size][size];
 
-		for (int i = 0; i < size; i++) {
-			for (int j = 0; j < size; j++) {
+		for (int i=0; i<size; i++)
+		{
+			for(int j=0; j<size; j++)
+			{
 				newMatrix[i][j] = otherMatrix[i][j];
 			}
 		}
@@ -70,12 +84,14 @@ public class GraphFunctions {
 		return newMatrix;
 	}
 
-	public static boolean cycleTest(final SkillGraph skillGraph) {
+	public static boolean cycleTest(final SkillGraph skillGraph)
+	{
 		boolean returnValue = true;
 		int numberOfSkills = skillGraph.getNumberOfSkills();
 		List<Skill> skillList = topologicalSort(skillGraph);
 
-		if (skillList.size() == numberOfSkills) {
+		if(skillList.size() == numberOfSkills)
+		{
 			returnValue = false;
 		}
 
@@ -83,7 +99,8 @@ public class GraphFunctions {
 	}
 
 	// determine if the (undirected) skill graph is connected
-	public static boolean isMatrixConnected(final int[][] skillMatrix) {
+	public static boolean isMatrixConnected(final int[][] skillMatrix)
+	{
 		boolean returnValue = false;
 
 		int[][] workingMatrix = GraphFunctions.matrixCopy(skillMatrix);
@@ -95,8 +112,10 @@ public class GraphFunctions {
 
 		// convert to undirected graph
 
-		for (int i = 0; i < size; i++) {
-			for (int j = i; j < size; j++) {
+		for(int i=0; i<size; i++)
+		{
+			for(int j=i; j<size; j++)
+			{
 				workingMatrix[j][i] = workingMatrix[i][j];
 			}
 		}
@@ -104,18 +123,22 @@ public class GraphFunctions {
 		fringeVertices.add(0);
 		connectedVertices.push(0);
 
-		while (!fringeVertices.isEmpty()) {
+		while (!fringeVertices.isEmpty())
+		{
 			newFringeVertices.clear();
 
 			// for all vertices on the fringe
-			for (int i = 0; i < fringeVertices.size(); i++) {
+			for (int i=0; i<fringeVertices.size(); i++)
+			{
 				int vertex = fringeVertices.get(i);
 
 				// add all vertices that are connected to this one
-				for (int j = 0; j < size; j++) {
-					if (workingMatrix[vertex][j] == 1) {
-						if (!newFringeVertices.contains(j)
-								&& connectedVertices.search(j) == -1) {
+				for(int j=0; j<size; j++)
+				{
+					if(workingMatrix[vertex][j] == 1)
+					{
+						if(!newFringeVertices.contains(j) && connectedVertices.search(j) == -1)
+						{
 							newFringeVertices.add(j);
 							connectedVertices.push(j);
 						}
@@ -125,27 +148,33 @@ public class GraphFunctions {
 
 			fringeVertices.clear();
 
-			for (int i = 0; i < newFringeVertices.size(); i++) {
+			for (int i = 0; i < newFringeVertices.size(); i++)
+			{
 				fringeVertices.add(newFringeVertices.get(i));
 			}
 		}
 
-		if (connectedVertices.size() == size) {
+		if(connectedVertices.size() == size)
+		{
 			returnValue = true;
 		}
 
 		/*
-		 * else { System.out.println("Failed connectivity check");
-		 * System.out.println(connectedVertices.size());
-		 * printSkillMatrix(workingMatrix); }
-		 */
+		else
+		{
+			System.out.println("Failed connectivity check");
+			System.out.println(connectedVertices.size());
+		 	printSkillMatrix(workingMatrix);
+		}
+		*/
 
 		return returnValue;
 	}
 
 	// returns a topological sort of the graph
 	// returns an incomplete list if the graph cannot be sorted (has cycles)
-	public static List<Skill> topologicalSort(final SkillGraph skillGraph) {
+	public static List<Skill> topologicalSort(final SkillGraph skillGraph)
+	{
 		List<Skill> skillList = new ArrayList<Skill>();
 
 		int numberOfSkills = skillGraph.getNumberOfSkills();
@@ -154,23 +183,29 @@ public class GraphFunctions {
 
 		boolean stuck = false;
 
-		while (skillList.size() < numberOfSkills && !stuck) {
+		while(skillList.size() < numberOfSkills && !stuck)
+		{
 			int skillToAdd = -1;
 
 			// look for a skill with no incoming edges
 
-			for (int i = 0; i < numberOfSkills && skillToAdd == -1; i++) {
+			for(int i=0; i<numberOfSkills && skillToAdd == -1; i++)
+			{
 				// skip if already added
-				if (!skillList.contains(skillGraph.getSkill(i))) {
+				if(!skillList.contains(skillGraph.getSkill(i)))
+				{
 					boolean noParents = true;
 
-					for (int j = 0; j < numberOfSkills && noParents; j++) {
-						if (currentSkillMatrix[j][i] == 1) {
+					for(int j=0; j<numberOfSkills && noParents; j++)
+					{
+						if(currentSkillMatrix[j][i] == 1)
+						{
 							noParents = false;
 						}
 					}
 
-					if (noParents) {
+					if(noParents)
+					{
 						skillToAdd = i;
 					}
 				}
@@ -178,10 +213,12 @@ public class GraphFunctions {
 
 			// add the skill to the topologically sorted list and update the
 			// current matrix
-			if (skillToAdd != -1) {
+			if(skillToAdd != -1)
+			{
 				skillList.add(skillGraph.getSkill(skillToAdd));
 
-				for (int i = 0; i < numberOfSkills; i++) {
+				for(int i=0; i<numberOfSkills; i++)
+				{
 					currentSkillMatrix[skillToAdd][i] = 0;
 				}
 			}
@@ -190,12 +227,13 @@ public class GraphFunctions {
 		return skillList;
 	}
 
-	public static boolean isLevelInRange(int[][] skillMatrix, int minLevel,
-			int maxLevel) {
+	public static boolean isLevelInRange(int[][] skillMatrix, int minLevel, int maxLevel)
+	{
 		boolean returnValue = false;
 		int numberOfLevels = getNumberOfLevels(skillMatrix);
 
-		if (minLevel <= numberOfLevels && maxLevel >= numberOfLevels) {
+		if(minLevel <= numberOfLevels && maxLevel >= numberOfLevels)
+		{
 			returnValue = true;
 		}
 
@@ -203,10 +241,11 @@ public class GraphFunctions {
 	}
 
 	// slightly different topological sort
-	public static int getNumberOfLevels(int[][] skillMatrix) {
-		if (skillMatrix.length < 1) {
-			System.err
-					.println("Matrix of zero size when getting the number of levels in the skill graph");
+	public static int getNumberOfLevels(int[][] skillMatrix)
+	{
+		if(skillMatrix.length < 1)
+		{
+			System.err.println("Matrix of zero size when getting the number of levels in the skill graph");
 			System.exit(-1);
 		}
 
@@ -216,22 +255,28 @@ public class GraphFunctions {
 		List<Integer> skillList = new ArrayList<Integer>();
 		boolean stuck = false;
 
-		while (skillList.size() < numberOfSkills && !stuck) {
+		while(skillList.size() < numberOfSkills && !stuck)
+		{
 			List<Integer> addList = new ArrayList<Integer>();
 
 			// look for *all* skills with no incoming edges
 
-			for (int i = 0; i < numberOfSkills; i++) {
-				if (!skillList.contains(i)) {
+			for (int i=0; i<numberOfSkills; i++)
+			{
+				if(!skillList.contains(i))
+				{
 					boolean noParents = true;
 
-					for (int j = 0; j < numberOfSkills && noParents; j++) {
-						if (currentSkillMatrix[j][i] == 1) {
+					for(int j=0; j<numberOfSkills && noParents; j++)
+					{
+						if (currentSkillMatrix[j][i] == 1)
+						{
 							noParents = false;
 						}
 					}
 
-					if (noParents) {
+					if(noParents)
+					{
 						addList.add(i);
 					}
 				}
@@ -239,32 +284,185 @@ public class GraphFunctions {
 
 			// add the skill to the topologically sorted list and update the
 			// current matrix
-			for (int i = 0; i < addList.size(); i++) {
+			for (int i=0; i<addList.size(); i++)
+			{
 				int skillToAdd = addList.get(i);
 				skillList.add(skillToAdd);
 
-				for (int j = 0; j < numberOfSkills; j++) {
+				for(int j=0; j<numberOfSkills; j++)
+				{
 					currentSkillMatrix[skillToAdd][j] = 0;
 				}
 			}
 
-			if (!addList.isEmpty()) {
+			if(!addList.isEmpty())
+			{
 				numberOfLevels++;
 			}
 		}
 
-		if (skillList.size() != numberOfSkills) {
-			System.err
-					.println("possible cycle detected when getting the number of levels in the skill graph");
+		if(skillList.size() != numberOfSkills)
+		{
+			System.err.println("possible cycle detected when getting the number of levels in the skill graph");
 			System.exit(-1);
 		}
 
 		return numberOfLevels;
 	}
 
-	public static void printSkillMatrix(int[][] skillMatrix) {
-		for (int i = 0; i < skillMatrix.length; i++) {
-			for (int j = 0; j < skillMatrix[i].length; j++) {
+	/**
+	 * Generates all files used for the graph
+	 * 
+	 * @param folderName
+	 *            the name of the folder in which the graph file will be stored
+	 */
+	public static void generateGraphFiles(SkillGraph skillGraph, String folderName)
+	{
+		QuickFileWriter.createFolder(folderName);
+
+		String skillMatrixFilePath = folderName + File.separator + "SkillGraph.csv";
+		outputSkillMatrix(skillGraph.generateSkillMatrix(), skillMatrixFilePath);
+
+		int[] skillItemNum = new int[skillGraph.getNumberOfSkills()];
+
+		for(int i=0; i<skillGraph.getNumberOfSkills(); i++)
+		{
+			skillItemNum[i] = skillGraph.getSkill(i).getNumberOfItems();
+		}
+
+		String itemToSkillMappingFilePath = folderName + File.separator + "ItemToSkillMapping.csv";
+		outputItemToSkillMapping(skillItemNum, itemToSkillMappingFilePath);
+
+		String guessAndSlipFilePath = folderName + File.separator + "GuessAndSlipRanges.csv";
+		outputGuessAndSlipFile(skillGraph.getNumberOfItems(), guessAndSlipFilePath);
+	}
+
+	/**
+	 * Outputs the skill to skill mapping matrix to a file
+	 * 
+	 * @param skillMatrix
+	 *            the skill matrix
+	 * @param folderName
+	 *            the name of the folder in which the file would be stored
+	 * 
+	 */
+	public static void outputSkillMatrix(int[][] skillMatrix, String filePath)
+	{
+		StringBuilder sb = new StringBuilder();
+
+		for(int i=0; i<skillMatrix.length; i++)
+		{
+			for(int j=0; j<skillMatrix[i].length; j++)
+			{
+				sb.append(Integer.toString(skillMatrix[i][j]) + ",");
+			}
+
+			sb.append("\n");
+		}
+
+		// remove the extra \n
+		if(sb.length() > 1)
+		{
+			sb.deleteCharAt(sb.length()-1);
+		}
+
+		// write string to file
+
+		String outputString = sb.toString();
+		QuickFileWriter.writeFile(filePath, outputString);
+	}
+
+	/**
+	 * ouputs the item to skill mapping file
+	 * 
+	 * @param itemNum
+	 *            the array that holds the number of items that each skill has
+	 * @param filePath
+	 *            the file that the item to skill mapping string is to be stored
+	 *            to
+	 */
+	public static void outputItemToSkillMapping(int[] itemNum, String filePath)
+	{
+		StringBuilder sb = new StringBuilder();
+
+		int itemIndex = 0;
+
+		for(int i=0; i<itemNum.length; i++)
+		{
+			for(int j=0; j<itemNum[i]; j++)
+			{
+				sb.append(Integer.toString(itemIndex) + "," + Integer.toString(i) + ",");
+				sb.append("Item" + Integer.toString(itemIndex + 1) + "," + "Skill" + Integer.toString(i + 1));
+				sb.append("\n");
+				itemIndex++;
+			}
+		}
+
+		// remove the extra \n
+		if (sb.length() > 1)
+		{
+			sb.deleteCharAt(sb.length()-1);
+		}
+
+		// write string to file
+
+		String outputString = sb.toString();
+		QuickFileWriter.writeFile(filePath, outputString);
+	}
+
+	/**
+	 * Outputs the file containing the guess and slip ranges for each item
+	 * 
+	 * @param folderName
+	 *            the folder in which the file would be stored
+	 * @param numberOfItems
+	 *            the number of guess and slip entries that should be generated
+	 */
+	public static void outputGuessAndSlipFile(int numberOfItems, String filePath)
+	{
+		StringBuilder sb = new StringBuilder();
+
+		for (int i=0; i<numberOfItems; i++)
+		{
+			String minGuess = Double.toString(Constants.MIN_GUESS);
+			String maxGuess = Double.toString(Constants.MAX_GUESS);
+			String minSlip = Double.toString(Constants.MIN_SLIP);
+			String maxSlip = Double.toString(Constants.MAX_SLIP);
+
+			sb.append(minGuess);
+			sb.append("-");
+			sb.append(maxGuess);
+
+			sb.append(",");
+
+			sb.append(minSlip);
+			sb.append("-");
+			sb.append(maxSlip);
+
+			sb.append(",");
+
+			sb.append("Guess" + Integer.toString(i + 1) + ", ");
+			sb.append("Slip" + Integer.toString(i + 1) + "\n");
+		}
+
+		// remove the extra \n
+		if (sb.length() > 1)
+		{
+			sb.deleteCharAt(sb.length() - 1);
+		}
+
+		// write string to file
+
+		String outputString = sb.toString();
+		QuickFileWriter.writeFile(filePath, outputString);
+	}
+
+	public static void printSkillMatrix(int[][] skillMatrix)
+	{
+		for (int i=0; i<skillMatrix.length; i++)
+		{
+			for(int j=0; j<skillMatrix[i].length; j++)
+			{
 				System.out.print(skillMatrix[i][j]);
 				System.out.print(" ");
 			}

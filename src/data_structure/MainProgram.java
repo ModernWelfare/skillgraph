@@ -2,61 +2,64 @@ package data_structure;
 
 import java.awt.Point;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import util.Constants;
 import util.FileReader;
 import util.GraphFunctions;
 import util.MatlabFileWriter;
+import util.QuickFileWriter;
 import util.RandomGraphGenerator;
 
-public class MainProgram {
-	// list of strings to hold the results from matlab evaluations
+public class MainProgram
+{
 
-	public static void main(String args[]) {
-		// name of the folder to contain all info of a certain graph
+	public static void main(String args[])
+	{
+		
+		int[] graphParameters = { 2, 3, 2, 3, 1, 3 };
 		String graphName = "test_graph";
+		int numberOfFakeSkills = 1;
 
-		// create the dir if it doesn't exist
-		File dir = new File(graphName);
+		runSearch(graphName, graphParameters, numberOfFakeSkills);
 
-		if (!dir.exists()) {
-			dir.mkdir();
-		}
 
-		// initialize the evaluation result list
-		// generates the random graph
-		int[] a = { 2, 3, 2, 3, 1, 3 };
-		RandomGraphGenerator.generateRandomGraph(a, "test_graph/ground_truth");
+	}
+
+	private static void runSearch(String graphName, int[] graphParameters, int numberOfFakeSkills)
+	{
+		QuickFileWriter.createFolder(graphName);
+
+		String originalPath = "ground_truth";
+		RandomGraphGenerator.generateRandomGraph(graphParameters, graphName + File.separator + originalPath);
 
 		SkillGraph graph = new SkillGraph(
-				"test_graph/ground_truth/SkillGraph.csv",
-				"test_graph/ground_truth/ItemToSkillMapping.csv",
-				"Example/CPT_Ranges1.csv",
-				"test_graph/ground_truth/GuessAndSlipRanges.csv");
+				graphName + File.separator + originalPath + File.separator + "SkillGraph.csv",
+				graphName + File.separator + originalPath + File.separator + "ItemToSkillMapping.csv",
+				"Example" + File.separator + "CPT_Ranges1.csv",
+				graphName + File.separator + originalPath + File.separator + "GuessAndSlipRanges.csv");
 
-		graph.generateFakeSkill();
+		for(int i=0; i<numberOfFakeSkills; i++)
+		{
+			graph.generateFakeSkill();
+		}
 
-		graph.generateGraphFiles("test_graph/fake_graph");
+		GraphFunctions.generateGraphFiles(graph, graphName + File.separator + "fake_graph");
 
 		// get the number of evaluation iterations
-		int iterationNum = graph.getNumberOfSkills() - 1;
+		int iterationNum = graph.getNumberOfSkills()-1;
+
 		// set the current graph we're working with
 		SkillGraph currentGraph = graph;
-		for (int i = 0; i < iterationNum; i++) {
-			String iterationNumber = "Iteration_" + Integer.toString(i + 1);
 
-			// make the iteration directory
-			File iterationDir = new File(graphName + "/" + iterationNumber);
+		for(int i=0; i<iterationNum; i++)
+		{
+			String iterationNumber = "Iteration_" + Integer.toString(i+1);
+			QuickFileWriter.createFolders(graphName + File.separator + iterationNumber);
 
-			if (!iterationDir.exists()) {
-				iterationDir.mkdirs();
-			}
-			currentGraph = selectBestMergedGraph(currentGraph, graphName + "/"
-					+ iterationNumber);
-			currentGraph.generateGraphFiles(iterationDir + "/best_graph");
+			currentGraph = selectBestMergedGraph(currentGraph, graphName + File.separator + iterationNumber);
+			GraphFunctions.generateGraphFiles(currentGraph, graphName + File.separator + iterationNumber + File.separator + "best_graph");
 		}
 	}
 
@@ -67,54 +70,62 @@ public class MainProgram {
 	 *            the graph to be merged
 	 * @return the best performing merged graph
 	 */
-	private static SkillGraph selectBestMergedGraph(SkillGraph graph,
-			String iterationDir) {
-		// if the graph has only one skill, simply return the given graph
-		if (graph.getNumberOfSkills() == 1) {
-			return graph;
+	private static SkillGraph selectBestMergedGraph(SkillGraph graph, String iterationDir)
+	{
+		SkillGraph bestGraph = graph;
+
+
+		if(graph.getNumberOfSkills() != 1)
+		{
+			int graphIndex = 0;
+			int selectedIndex = 0;
+			List<String> matlabResults = new ArrayList<String>();
+			List<Point> possibleMerges = GraphFunctions.getAllPossibleMerges(graph);
+			List<SkillGraph> mergedGraphs = new ArrayList<SkillGraph>();
+
+			GraphFunctions.generateGraphFiles(graph, iterationDir + File.separator + "starting_graph");
+
+			for(Point p : possibleMerges)
+			{
+				// first create a fresh copy of the original graph
+				SkillGraph mergedGraph = new SkillGraph(graph);
+
+				// perform the merge
+				mergedGraph.mergeSkills(p.x, p.y);
+
+				// outputs the merged graphs
+				GraphFunctions.generateGraphFiles(mergedGraph, iterationDir + File.separator + Integer.toString(possibleMerges.indexOf(p)));
+				mergedGraphs.add(mergedGraph);
+			}
+
+			// evaluate the graphs and store the results
+			for(SkillGraph g : mergedGraphs)
+			{
+				matlabResults.add(getGraphEvaluationResults(g, graphIndex));
+				graphIndex++;
+			}
+
+			selectedIndex = selectBestResultIndex(matlabResults);
+			printResults(iterationDir, matlabResults, selectedIndex);
+
+			bestGraph = mergedGraphs.get(selectedIndex);
 		}
 
-		int graphIndex = 0;
-		int selectedIndex = 0;
-		List<String> matlabResults = new ArrayList<String>();
-		List<Point> possibleMerges = GraphFunctions.getAllPossibleMerges(graph);
-		List<SkillGraph> mergedGraphs = new ArrayList<SkillGraph>();
-
-		graph.generateGraphFiles(iterationDir + "/starting_graph");
-
-		for (Point p : possibleMerges) {
-			// first create a fresh copy of the original graph
-			SkillGraph mergedGraph = new SkillGraph(graph);
-			// perform the merge
-			mergedGraph.mergeSkills(p.x, p.y);
-			// outputs the merged graphs
-			mergedGraph.generateGraphFiles(iterationDir + "/"
-					+ Integer.toString(possibleMerges.indexOf(p)));
-			mergedGraphs.add(mergedGraph);
-		}
-
-		// evaluate the graphs and store the results
-		for (SkillGraph g : mergedGraphs) {
-			matlabResults.add(getGraphEvaluationResults(g, graphIndex));
-			graphIndex++;
-		}
-
-		selectedIndex = selectBestResultIndex(matlabResults);
-
-		printResults(iterationDir, matlabResults, selectedIndex);
-
-		return mergedGraphs.get(selectedIndex);
+		return bestGraph;
 	}
 
-	private static void printResults(String iterationDir,
-			List<String> matlabResults, int selectedIndex) {
-		String filePath = iterationDir + "/results.txt";
+	private static void printResults(String iterationDir, List<String> matlabResults, int selectedIndex)
+	{
+		String filePath = iterationDir + File.separator + "results.txt";
 		StringBuilder sb = new StringBuilder();
-		for (String s : matlabResults) {
+
+		for(String s : matlabResults)
+		{
 			sb.append(s);
 		}
+
 		sb.append("Selected index: " + Integer.toString(selectedIndex) + "\n");
-		writeFile(filePath, sb.toString());
+		QuickFileWriter.writeFile(filePath, sb.toString());
 	}
 
 	/**
@@ -124,16 +135,22 @@ public class MainProgram {
 	 *            a list of strings of matlab results
 	 * @return the index of the best result string
 	 */
-	private static int selectBestResultIndex(List<String> matlabResults) {
-		int minIndex = 0;
-		float smallestRMSE = Float.MAX_VALUE;
+	private static int selectBestResultIndex(List<String> matlabResults)
+	{
+		int minIndex = -1;
+		String firstResult = matlabResults.get(0);
+		double smallestRMSE = Double.parseDouble(firstResult.split(" ")[2]);
 
-		for (int i = 0; i < matlabResults.size(); i++) {
+		for(int i=0; i<matlabResults.size(); i++)
+		{
 			String s = matlabResults.get(i);
-			float rmse = Float.parseFloat(s.split(" ")[2]);
-			if (rmse < smallestRMSE) {
+			double rmse = Double.parseDouble(s.split(" ")[2]);
+
+			if(rmse <= smallestRMSE)
+			{
 				smallestRMSE = rmse;
 			}
+
 			minIndex = i;
 		}
 
@@ -150,42 +167,57 @@ public class MainProgram {
 	 *            the index of the graph
 	 * @return a string representing the evaluation results
 	 */
-	private static String getGraphEvaluationResults(SkillGraph graph,
-			int graphIndex) {
-		MatlabFileWriter.outPutSkillGraphMatlabFile(graph, graphIndex,
-				"sampleDag.m");
+	private static String getGraphEvaluationResults(SkillGraph graph, int graphIndex)
+	{
+		String returnString = "";
+		MatlabFileWriter.outPutSkillGraphMatlabFile(graph, graphIndex, "sampleDag.m");
 
-		try {
+		try
+		{
+
+			/*
 			// run the matlab command on a new process
-			Process p = Runtime.getRuntime().exec(
+			Process p = Runtime.getRuntime().exec(Constants.MATLAB_PATH +
 					"matlab -nodisplay -wait -nosplash -nodesktop -r \"cd bnt; "
 							+ "addpath(genpathKPM(pwd)); "
 							+ "cd ../matlab_scripts; "
 							+ "run CreateDLMObject; " + "run Evaluation1; "
 							+ "exit;\"");
-			p.waitFor();
-			// return the result string generated by matlab when the process is
-			// done
-			return FileReader.readCSVFile("results/results.txt").get(0);
+			*/
 
-		} catch (InterruptedException | IOException ex) {
-			// print stack trace and exit
+			
+
+			Process p = Runtime.getRuntime().exec(Constants.MATLAB_PATH +
+					"matlab -nodisplay -wait -nosplash -nodesktop -r \" "
+							+ "cd matlab_scripts; "
+							+ "run CreateDLMObject; " + "run Evaluation1; "
+							+ "exit;\"");
+
+
+
+			p.waitFor();
+
+			int returnValue = p.exitValue();
+			
+
+			if(returnValue != 0)
+			{
+				System.err.println("MATLAB process ended with a non-zero return value");
+				System.exit(-1);
+			}
+
+			// return the result string generated by matlab when the process is done
+
+			returnString = FileReader.readCSVFile("results" + File.separator + "results.txt").get(0);
+			return returnString;
+
+		}
+		catch(Exception ex)
+		{
 			ex.printStackTrace();
 			System.exit(-1);
 		}
-		return null;
-	}
 
-	private static void writeFile(String filePath, String outputString) {
-		try {
-			FileWriter file = new FileWriter(filePath, false);
-
-			file.write(outputString);
-			file.flush();
-			file.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.exit(-1);
-		}
+		return returnString;
 	}
 }
