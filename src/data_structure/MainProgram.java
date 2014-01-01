@@ -14,9 +14,11 @@ import util.RandomGraphGenerator;
 
 public class MainProgram
 {
+	private static int bestGraphIndex;
 
 	public static void main(String args[])
 	{
+		bestGraphIndex = -1;
 		
 		int[] graphParameters = { 2, 3, 2, 3, 1, 3 };
 		String graphName = "test_graph";
@@ -40,6 +42,8 @@ public class MainProgram
 				"Example" + File.separator + "CPT_Ranges1.csv",
 				graphName + File.separator + originalPath + File.separator + "GuessAndSlipRanges.csv");
 
+		GraphFunctions.outputMathematicaGraphs(graph, graphName + File.separator + originalPath + File.separator);
+
 		for(int i=0; i<numberOfFakeSkills; i++)
 		{
 			graph.generateFakeSkill();
@@ -59,8 +63,20 @@ public class MainProgram
 			QuickFileWriter.createFolders(graphName + File.separator + iterationNumber);
 
 			currentGraph = selectBestMergedGraph(currentGraph, graphName + File.separator + iterationNumber);
-			GraphFunctions.generateGraphFiles(currentGraph, graphName + File.separator + iterationNumber + File.separator + "best_graph");
+			String bestGraphIndexString = "best_graph_" + Integer.toString(getBestGraphIndex());
+			GraphFunctions.generateGraphFiles(currentGraph, graphName + File.separator + iterationNumber + File.separator + bestGraphIndexString);
+			
 		}
+	}
+
+	private static void setBestGraphIndex(int bix)
+	{
+		bestGraphIndex = bix;
+	}
+
+	private static int getBestGraphIndex()
+	{
+		return bestGraphIndex;
 	}
 
 	/**
@@ -109,6 +125,7 @@ public class MainProgram
 			printResults(iterationDir, matlabResults, selectedIndex);
 
 			bestGraph = mergedGraphs.get(selectedIndex);
+			setBestGraphIndex(selectedIndex);
 		}
 
 		return bestGraph;

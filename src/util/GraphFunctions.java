@@ -335,6 +335,10 @@ public class GraphFunctions
 
 		String guessAndSlipFilePath = folderName + File.separator + "GuessAndSlipRanges.csv";
 		outputGuessAndSlipFile(skillGraph.getNumberOfItems(), guessAndSlipFilePath);
+
+		String mathematicaFilePath = folderName + File.separator;
+		outputMathematicaGraphs(skillGraph, mathematicaFilePath);
+		
 	}
 
 	/**
@@ -455,6 +459,32 @@ public class GraphFunctions
 
 		String outputString = sb.toString();
 		QuickFileWriter.writeFile(filePath, outputString);
+	}
+
+	public static void outputMathematicaGraphs(SkillGraph skillGraph, String filePath)
+	{
+		String path1 = filePath.concat("MGraph_All.txt");
+		String path2 = filePath.concat("MGraph_NoEdgeLabels.txt");
+		String path3 = filePath.concat("MGraph_NoGS.txt");
+		String path4 = filePath.concat("MGraph_NoGS_NoEdgeLabels.txt");
+		String path5 = filePath.concat("MGraph_OnlyNames.txt");
+		String path6 = filePath.concat("MGraph_OnlyNames_NoEdgeLabels.txt");
+
+
+		String outputString1 = MathematicaGenerator.getMathematicaString(skillGraph, 0, true);
+		String outputString2 = MathematicaGenerator.getMathematicaString(skillGraph, 0, false);
+		String outputString3 = MathematicaGenerator.getMathematicaString(skillGraph, 2, true);
+		String outputString4 = MathematicaGenerator.getMathematicaString(skillGraph, 2, false);
+		String outputString5 = MathematicaGenerator.getMathematicaString(skillGraph, 3, true);
+		String outputString6 = MathematicaGenerator.getMathematicaString(skillGraph, 3, false);
+
+
+		QuickFileWriter.writeFile(path1, outputString1);
+		QuickFileWriter.writeFile(path2, outputString2);
+		QuickFileWriter.writeFile(path3, outputString3);
+		QuickFileWriter.writeFile(path4, outputString4);
+		QuickFileWriter.writeFile(path5, outputString5);
+		QuickFileWriter.writeFile(path6, outputString6);
 	}
 
 	public static void printSkillMatrix(int[][] skillMatrix)
