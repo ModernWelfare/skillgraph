@@ -15,7 +15,7 @@ import util.FileReader;
  * 
  * @author Bohao Li <bli@wpi.edu>
  * @author Douglas Selent
- * 
+ * @author Seth Adjei
  */
 public class SkillGraph
 {
@@ -666,19 +666,38 @@ public class SkillGraph
 		{
 			newSkill.addItem(oldSkill.removeItem(i));
 		}
+		
+		//Determine attachment point.
+		int attachPoint = ConstantRNG.getNextInt(1, 2);
+		
+		if(attachPoint == 1){//Attach as child of Old Skill
+			// Move the children of the oldSkill and attach them to the new skill
+			List<Skill> children = oldSkill.getChildren();
 
-		// Move the children of the oldSkill and attach them to the new skill
-		List<Skill> children = oldSkill.getChildren();
-
-		for(int i = 0; i < children.size(); i++)
-		{
-			Skill child = children.get(i);
-			newSkill.addChildAndChildParent(oldSkill.removeChildAndChildParent(child));
+			for(int i = 0; i < children.size(); i++)
+			{
+				Skill child = children.get(i);
+				newSkill.addChildAndChildParent(oldSkill.removeChildAndChildParent(child));
+			}
+			
+			// Make the new skill a child of the old skill
+			oldSkill.addChildAndChildParent(newSkill);	
+		}else{//Attach as parent of Old Skill
+			//Get all the parents of this current skill
+			List<Skill> parents = oldSkill.getParents();
+			
+			for(int i = 0; i<parents.size(); i++){
+				Skill parent = parents.get(i);
+				//Remove the link between the parent skill and the old skill
+				parent.removeChildAndChildParent(oldSkill);
+				//Make the new skill the child of the parent skills of the old skill
+				parent.addChildAndChildParent(newSkill);
+			}
+			//Make the new skill the parent of the old skill
+			newSkill.addChildAndChildParent(oldSkill);				
+			
 		}
-
-		// Make the new skill a child of the old skill
-		oldSkill.addChildAndChildParent(newSkill);
-
+		
 		// attach the new skill and re-index all the skills
 		skillList.add(newSkill);
 		reIndexSkills();
