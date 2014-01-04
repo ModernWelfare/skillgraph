@@ -23,7 +23,7 @@ cases(:,bnet.observed) = num2cell(dlmObject.responses+1);
 
 engine = jtree_inf_engine(bnet);
 max_iter = 300;
-filename = ['dlm_resultsFinalRun',num2str(FileNum),'.txt'];
+filename = 'predictions.txt';
 report = fopen(filename,'w');
 for fold=1:5
     %~80 percent training fold for student folds, : = all students, 1 =

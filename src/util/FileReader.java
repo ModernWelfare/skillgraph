@@ -16,25 +16,30 @@ import java.util.List;
  * @author Douglas Selent
  * 
  */
-public class FileReader {
+public class FileReader
+{
 
 	private final static Charset ENCODING = StandardCharsets.UTF_8;
 
 	/**
-	 * Read a csv file to a list of strings with each string holding a complete
+	 * Read a file to a list of strings with each string holding a complete
 	 * line
 	 * 
 	 * @param filePath
 	 * @return
 	 * @throws IOException
 	 */
-	public static List<String> readCSVFile(String filePath) {
+	public static List<String> readFile(String filePath)
+	{
 		List<String> returnList = new ArrayList<String>();
 
-		try {
+		try
+		{
 			Path path = Paths.get(filePath);
 			returnList = Files.readAllLines(path, ENCODING);
-		} catch (Exception e) {
+		}
+		catch(Exception e)
+		{
 			e.printStackTrace();
 			System.exit(-1);
 		}

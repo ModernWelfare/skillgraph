@@ -1,3 +1,6 @@
+%
+%Create the dlmObject
+%
 
 %takes a file of the item data (Q-matrix) and creates a dlm object with folds from it
 
@@ -10,21 +13,7 @@ seed = 3;
 s = RandStream('mt19937ar', 'Seed', seed);
 RandStream.setGlobalStream(s);
 
-%
-%Generating the data file
-%
-
-numberOfStudents = 100;
-
-
-[bnet, UID] = sampleDag();
-GenerateDataFromDag(bnet, numberOfStudents, UID);
-
-
-%
-%Create the dlmObject
-%
-
+[bnet, UID, numberOfStudents] = currentDag();
 
 %load the file with the item data
 
@@ -36,7 +25,6 @@ data = load(loadFile);
 %set the number of students and number of items based on the file
 %rows = students, columns = items
 
-numberOfStudents = size(data, 1);
 numberOfItems = size(data, 2);
 
 %sets constants for number of student folds and number of item folds
@@ -63,7 +51,7 @@ end
 %create the dlm object and save it
 dlmObject = struct('responses', responses, 'folds', folds);
 save('dlmObject.mat', 'dlmObject');
-
+save('bnet.mat', 'bnet');
 
 
 

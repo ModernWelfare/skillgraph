@@ -268,7 +268,7 @@ public class SkillGraph
 	 */
 	private void createSkillsAndItems(String itemToSkillMappingFilePath)
 	{
-		List<String> itemInfo = FileReader.readCSVFile(itemToSkillMappingFilePath);
+		List<String> itemInfo = FileReader.readFile(itemToSkillMappingFilePath);
 
 		// loop to add all items and skills to lists
 		for(int i = 0; i < itemInfo.size(); i++)
@@ -333,7 +333,7 @@ public class SkillGraph
 	 */
 	private void createGuessAndSlip(String guessSlipFilePath)
 	{
-		List<String> guessSlipInfo = FileReader.readCSVFile(guessSlipFilePath);
+		List<String> guessSlipInfo = FileReader.readFile(guessSlipFilePath);
 
 		// loop to add all guess and slip nodes to the lists
 		for(int i=0; i<guessSlipInfo.size(); i++)
@@ -387,7 +387,7 @@ public class SkillGraph
 	 */
 	private void storeSkillTemplate(String skillFilePath)
 	{
-		List<String> cptInfo = FileReader.readCSVFile(skillFilePath);
+		List<String> cptInfo = FileReader.readFile(skillFilePath);
 		cptSkillTemplate = new CPTSkillTemplate(cptInfo);
 	}
 
@@ -399,7 +399,7 @@ public class SkillGraph
 	 */
 	private void storeGuessSlipTemplate(String guessSlipFilePath)
 	{
-		List<String> cptInfo = FileReader.readCSVFile(guessSlipFilePath);
+		List<String> cptInfo = FileReader.readFile(guessSlipFilePath);
 		cptGuessSlipTemplate = new CPTGuessSlipTemplate(cptInfo);
 	}
 
@@ -407,7 +407,7 @@ public class SkillGraph
 
 	private void addItemsToSkills(String itemToSkillMappingFilePath)
 	{
-		List<String> itemInfo = FileReader.readCSVFile(itemToSkillMappingFilePath);
+		List<String> itemInfo = FileReader.readFile(itemToSkillMappingFilePath);
 
 		// loop to link up the items to the skills
 		for(int i=0; i<itemInfo.size(); i++)
@@ -449,7 +449,7 @@ public class SkillGraph
 
 		// read use the file reader to read the csv file
 
-		List<String> structureInfo = FileReader.readCSVFile(skillStructureFilePath);
+		List<String> structureInfo = FileReader.readFile(skillStructureFilePath);
 		int numberOfSkills = skillList.size();
 
 		int[][] skillMatrix = new int[numberOfSkills][numberOfSkills];

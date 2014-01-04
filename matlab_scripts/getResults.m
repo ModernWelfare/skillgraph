@@ -1,10 +1,10 @@
 clc;clear all;close all;
 %% load data
 load integers_dlm.mat;
-filename = 'eval_results.txt';
+filename = 'predictions.txt';
 results = fopen(filename,'w');
 for i=1:2
-    data = load(['dlm_resultsFinalRun',num2str(i),'.txt']);
+    data = load('results.txt');
     %% Record Results
     aucR(i) = auc(data(:,4),data(:,5));
     rmseR(i) = sqrt(mean((data(:,4)-data(:,5)).^2));

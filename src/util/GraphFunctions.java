@@ -445,7 +445,7 @@ public class GraphFunctions
 
 			sb.append(",");
 
-			sb.append("Guess" + Integer.toString(i + 1) + ", ");
+			sb.append("Guess" + Integer.toString(i + 1) + ",");
 			sb.append("Slip" + Integer.toString(i + 1) + "\n");
 		}
 

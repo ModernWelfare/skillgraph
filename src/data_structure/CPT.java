@@ -57,7 +57,7 @@ public class CPT
 			double upperBound = cptTemplate.getUpperBound(numberOfParents, numberOfOnes);
 
 			// 0 = false, 1 = true
-			probabilityValues[i][1] = ConstantRNG.getNextNumberUniform(lowerBound, upperBound);
+			probabilityValues[i][1] = ConstantRNG.getNextNumberGuassian(lowerBound, upperBound);
 
 			// double sillyness
 			probabilityValues[i][0] = (100 - probabilityValues[i][1] * 100) / 100;
@@ -74,7 +74,7 @@ public class CPT
 		double lowerBound = cptTemplate.getLowerBound(index, guessOrSlip);
 		double upperBound = cptTemplate.getUpperBound(index, guessOrSlip);
 
-		probabilityValues[0][1] = ConstantRNG.getNextNumberUniform(lowerBound, upperBound);
+		probabilityValues[0][1] = ConstantRNG.getNextNumberGuassian(lowerBound, upperBound);
 		probabilityValues[0][0] = (100 - probabilityValues[0][1] * 100) / 100;
 	}
 

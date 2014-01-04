@@ -7,14 +7,11 @@ RandStream.setGlobalStream(s);
 
 
 
-
-
-
 %% load data
 load dlmObject.mat;
 load bnet.mat;
 
-filename = 'results1.txt';
+filename = 'results.txt';
  
 results = fopen(filename,'w');
 
@@ -25,8 +22,9 @@ i = 1;
     %% Evaluate DAG
  
     para = dlm_basic_eval(bnet, dlmObject, i);
-    data = load(['dlm_resultsFinalRun',num2str(i),'.txt']);
- 
+    %data = load(['dlm_resultsFinalRun',num2str(i),'.txt']);
+    data = load('predictions.txt'); 
+
     %% Record Results
     aic = aic(data(:,5),data(:,4), para);
     bic = bic(data(:,5),data(:,4), para);

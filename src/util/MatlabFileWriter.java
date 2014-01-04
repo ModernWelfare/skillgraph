@@ -19,7 +19,7 @@ public class MatlabFileWriter
 {
 	private final static String OUTPUT_DIR = "matlab_scripts";
 
-	public static void outPutSkillGraphMatlabFile(SkillGraph graph, int graphNumber, String fileName)
+	public static void outputSkillGraphMatlabFile(SkillGraph graph, int graphNumber, String fileName, int numberOfStudents)
 	{
 		// set up the directory and the filePath
 		QuickFileWriter.createFolder(OUTPUT_DIR);
@@ -33,11 +33,12 @@ public class MatlabFileWriter
 		// write the first common part;
 
 		output.append("%The function name should correspond to the name of the file. Please remember to make it match the model and iteration numbers\n");
-		output.append("function [bnet, UID] = sampleDag()\n");
+		output.append("function [bnet, UID, numberOfStudents] = currentDag()\n");
 		output.append("% the total number of nodes in the model. This should be the sum of the skill and item nodes\n");
 
 		// output the total number of nodes
 		output.append("N = " + Integer.toString(numberOfNodes) + ";\n");
+		output.append("numberOfStudents = " + Integer.toString(numberOfStudents) + ";\n");
 		output.append("numberOfItems = " + Integer.toString(graph.getNumberOfItems()) + ";\n");
 		output.append("numberOfSkills = " + Integer.toString(graph.getNumberOfSkills()) + ";\n");
 		output.append("UID = " + Integer.toString(graphNumber) + ";\n");
@@ -59,7 +60,7 @@ public class MatlabFileWriter
 		}
 
 		// output the names and indices of the slips
-		output.append("% variable names for the slips in the graph. \n");
+		output.append("% variable names for the slips in the graph.\n");
 		for(Slip s : graph.getSlipList())
 		{
 			output.append(s.getName() + " = " + Integer.toString(s.getNodeIndex()+1) + ";\n");

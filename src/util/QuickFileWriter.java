@@ -3,6 +3,14 @@ package util;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.LinkOption;
+import java.nio.file.StandardCopyOption;
+ 
 
 public class QuickFileWriter
 {
@@ -54,4 +62,21 @@ public class QuickFileWriter
 			System.exit(-1);
 		}
 	}
+
+	public static void copyFile(String source, String destination)
+	{
+		try
+		{
+			Path copy = Paths.get(source);
+			Path paste = Paths.get(destination);
+			
+			Files.copy(copy, paste, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING, LinkOption.NOFOLLOW_LINKS);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			System.exit(-1);
+		}	
+	}
 }
+
