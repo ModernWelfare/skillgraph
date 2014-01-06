@@ -278,6 +278,6 @@ public class MathematicaGenerator
 
 		String outputString = getMathematicaString(skillGraph, type, edgeLabels);
 
-		QuickFileWriter.writeFile(filePath, outputString);
+		QuickFileWriter.writeFile(filePath, outputString, false);
 	}
 }

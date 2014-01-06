@@ -10,7 +10,7 @@ import java.util.Random;
  */
 public class ConstantRNG
 {
-	private static final Random random = new Random(Constants.RANDOM_SEED);
+	private static final Random random = new Random(Globals.getRandomSeed());
 
 	private ConstantRNG()
 	{

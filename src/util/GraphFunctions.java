@@ -36,7 +36,7 @@ public class GraphFunctions
 		// i = parent, j = child
 		for(int i=0; i<numberOfSkills; i++)
 		{
-			for (int j=0; j<numberOfSkills; j++)
+			for(int j=0; j<numberOfSkills; j++)
 			{
 				if(skillMatrix[i][j] == 1)
 				{
@@ -222,6 +222,10 @@ public class GraphFunctions
 					currentSkillMatrix[skillToAdd][i] = 0;
 				}
 			}
+			else
+			{
+				stuck = true;
+			}
 		}
 
 		return skillList;
@@ -373,7 +377,7 @@ public class GraphFunctions
 		// write string to file
 
 		String outputString = sb.toString();
-		QuickFileWriter.writeFile(filePath, outputString);
+		QuickFileWriter.writeFile(filePath, outputString, false);
 	}
 
 	/**
@@ -411,7 +415,7 @@ public class GraphFunctions
 		// write string to file
 
 		String outputString = sb.toString();
-		QuickFileWriter.writeFile(filePath, outputString);
+		QuickFileWriter.writeFile(filePath, outputString, false);
 	}
 
 	/**
@@ -458,7 +462,7 @@ public class GraphFunctions
 		// write string to file
 
 		String outputString = sb.toString();
-		QuickFileWriter.writeFile(filePath, outputString);
+		QuickFileWriter.writeFile(filePath, outputString, false);
 	}
 
 	public static void outputMathematicaGraphs(SkillGraph skillGraph, String filePath)
@@ -479,12 +483,12 @@ public class GraphFunctions
 		String outputString6 = MathematicaGenerator.getMathematicaString(skillGraph, 3, false);
 
 
-		QuickFileWriter.writeFile(path1, outputString1);
-		QuickFileWriter.writeFile(path2, outputString2);
-		QuickFileWriter.writeFile(path3, outputString3);
-		QuickFileWriter.writeFile(path4, outputString4);
-		QuickFileWriter.writeFile(path5, outputString5);
-		QuickFileWriter.writeFile(path6, outputString6);
+		QuickFileWriter.writeFile(path1, outputString1, false);
+		QuickFileWriter.writeFile(path2, outputString2, false);
+		QuickFileWriter.writeFile(path3, outputString3, false);
+		QuickFileWriter.writeFile(path4, outputString4, false);
+		QuickFileWriter.writeFile(path5, outputString5, false);
+		QuickFileWriter.writeFile(path6, outputString6, false);
 	}
 
 	public static void printSkillMatrix(int[][] skillMatrix)

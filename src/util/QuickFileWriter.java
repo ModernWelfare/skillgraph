@@ -46,11 +46,11 @@ public class QuickFileWriter
 	 * @param outputString
 	 *            the output string to be written to the file
 	 */
-	public static void writeFile(String filePath, String outputString)
+	public static void writeFile(String filePath, String outputString, boolean append)
 	{
 		try
 		{
-			FileWriter file = new FileWriter(filePath, false);
+			FileWriter file = new FileWriter(filePath, append);
 
 			file.write(outputString);
 			file.flush();

@@ -152,7 +152,7 @@ public class CPTGuessSlipTemplate
 	{
 		boolean returnValue = true;
 
-		if (otherTemplate == null)
+		if(otherTemplate == null)
 		{
 			returnValue = false;
 		} 

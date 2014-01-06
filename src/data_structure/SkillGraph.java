@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import util.ConstantRNG;
-import util.Constants;
+import util.Globals;
 import util.FileReader;
 
 /**
@@ -77,10 +77,10 @@ public class SkillGraph
 		guessList = new ArrayList<Guess>();
 		slipList = new ArrayList<Slip>();
 
-		List<Skill> otherSkillList = otherSkillGraph.getSkillList();
-		List<Item> otherItemList = otherSkillGraph.getItemList();
-		List<Guess> otherGuessList = otherSkillGraph.getGuessList();
-		List<Slip> otherSlipList = otherSkillGraph.getSlipList();
+		List<Skill> otherSkillList = new ArrayList<Skill>(otherSkillGraph.getSkillList());
+		List<Item> otherItemList = new ArrayList<Item>(otherSkillGraph.getItemList());
+		List<Guess> otherGuessList = new ArrayList<Guess>(otherSkillGraph.getGuessList());
+		List<Slip> otherSlipList = new ArrayList<Slip>(otherSkillGraph.getSlipList());
 
 		numberOfNodes = otherSkillGraph.getNumberOfNodes();
 
@@ -565,7 +565,7 @@ public class SkillGraph
 		parent.setName(parent.getName() + "x" + child.getName());
 
 		// add child children to parent child list
-		List<Skill> grandChildren = child.getChildren();
+		List<Skill> grandChildren = new ArrayList<Skill>(child.getChildren());
 
 		for(int i=0; i<grandChildren.size(); i++)
 		{
@@ -579,9 +579,9 @@ public class SkillGraph
 		}
 
 		// add child parents to parent parents list
-		List<Skill> childParents = child.getParents();
+		List<Skill> childParents = new ArrayList<Skill>(child.getParents());
 
-		for (int i=0; i<childParents.size(); i++)
+		for(int i=0; i<childParents.size(); i++)
 		{
 			Skill childParent = childParents.get(i);
 			child.removeParentAndParentChild(childParent);
@@ -606,8 +606,9 @@ public class SkillGraph
 
 		// update the parent's CPT table as the parent may now have more parents
 		parent.setCPTTable(new CPT(parent.getParents().size(), cptSkillTemplate));
-
 		reIndexSkills();
+
+		//System.out.println(skillList);
 	}
 
 	public void generateFakeSkill()
@@ -659,7 +660,7 @@ public class SkillGraph
 		Skill newSkill = new Skill(oldSkill);
 
 		newSkill.setIndex(getSkillList().size());
-		newSkill.setName(oldSkill.getName() + "_split_" + newSkill.getIndex());
+		newSkill.setName(oldSkill.getName() + "zsplitz" + newSkill.getIndex());
 
 		// Split the items up between the two skills
 		for(int i = 0; i < cutPoint; i++)
@@ -670,11 +671,13 @@ public class SkillGraph
 		//Determine attachment point.
 		int attachPoint = ConstantRNG.getNextInt(1, 2);
 		
-		if(attachPoint == 1){//Attach as child of Old Skill
+		if(attachPoint == 1)
+		{
+			//Attach as child of Old Skill
 			// Move the children of the oldSkill and attach them to the new skill
-			List<Skill> children = oldSkill.getChildren();
+			List<Skill> children = new ArrayList<Skill>(oldSkill.getChildren());
 
-			for(int i = 0; i < children.size(); i++)
+			for(int i=0; i<children.size(); i++)
 			{
 				Skill child = children.get(i);
 				newSkill.addChildAndChildParent(oldSkill.removeChildAndChildParent(child));
@@ -682,17 +685,23 @@ public class SkillGraph
 			
 			// Make the new skill a child of the old skill
 			oldSkill.addChildAndChildParent(newSkill);	
-		}else{//Attach as parent of Old Skill
+		}
+		else{
+			//Attach as parent of Old Skill
 			//Get all the parents of this current skill
-			List<Skill> parents = oldSkill.getParents();
+			List<Skill> parents = new ArrayList<Skill>(oldSkill.getParents());
 			
-			for(int i = 0; i<parents.size(); i++){
+			for(int i=0; i<parents.size(); i++)
+			{
 				Skill parent = parents.get(i);
 				//Remove the link between the parent skill and the old skill
+
 				parent.removeChildAndChildParent(oldSkill);
+
 				//Make the new skill the child of the parent skills of the old skill
 				parent.addChildAndChildParent(newSkill);
 			}
+
 			//Make the new skill the parent of the old skill
 			newSkill.addChildAndChildParent(oldSkill);				
 			
@@ -833,6 +842,92 @@ public class SkillGraph
 		sb.deleteCharAt(sb.length()-1);
 
 		return sb.toString();
+	}
+
+	public boolean compareGraph(SkillGraph otherGraph)
+	{
+		boolean returnValue = true;
+
+		if(getNumberOfSkills() == otherGraph.getNumberOfSkills())
+		{
+			int skillMatrix1[][] = generateSkillMatrix();
+			int skillMatrix2[][] = otherGraph.generateSkillMatrix();
+
+			for(int i=0; i<skillMatrix1.length; i++)
+			{
+				for(int j=0; j<skillMatrix1.length; j++)
+				{
+					if(skillMatrix1[i][j] != skillMatrix2[i][j])
+					{
+						returnValue = false;
+					}
+				}
+			}
+		}
+		else
+		{
+			returnValue = false;
+		}
+		
+		//graph is the same but nodes may be different
+		//a->c, b->c = x->c, x could be a or b
+		//check that best graph did not merge two real skills
+		//check that best graph merged the fake skill into the correct skill
+		if(returnValue)
+		{
+			for(int i=0; i<getNumberOfSkills(); i++)
+			{
+				String name = otherGraph.getSkill(i).getName();
+				String skillNames[] = name.split("x");
+
+				//multiple skills merged
+				if(skillNames.length > 1)
+				{
+					String realSkill = "";
+
+					//search for the real skill
+					for(int j=0; j<skillNames.length; j++)
+					{
+						//found real skill
+						if(!skillNames[j].contains("split"))
+						{
+							//if this is not the only real skill
+							if(!realSkill.equals(""))
+							{
+								returnValue = false;
+							}
+
+							realSkill = skillNames[j];
+						}
+					}
+
+					//real skill was found
+					if(!realSkill.equals(""))
+					{
+						for(int j=0; j<skillNames.length; j++)
+						{
+							//make sure fake skill was split off of the real skill
+							if(skillNames[j].contains("split"))
+							{
+								int endIndex = skillNames[j].indexOf("z");
+								String realSkill1 = skillNames[j].substring(0, endIndex);
+
+								if(!realSkill.equals("realSkill1"))
+								{
+									returnValue = false;
+								}
+							}
+						}
+					}
+					else
+					{
+						returnValue = false;
+					}
+				}
+			}
+		}
+
+		return returnValue;
 	}
 	
 	@Override

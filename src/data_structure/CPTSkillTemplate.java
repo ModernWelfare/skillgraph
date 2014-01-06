@@ -30,7 +30,6 @@ public class CPTSkillTemplate
 
 			for(int j=0; j<ranges.length; j++)
 			{
-
 				String bounds = ranges[j];
 
 				if(bounds.equalsIgnoreCase("x"))
@@ -153,7 +152,7 @@ public class CPTSkillTemplate
 	{
 		boolean returnValue = true;
 
-		if (otherTemplate == null)
+		if(otherTemplate == null)
 		{
 			returnValue = false;
 		} 

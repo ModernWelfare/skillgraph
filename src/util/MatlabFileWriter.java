@@ -165,6 +165,6 @@ public class MatlabFileWriter
 			output.append(i.convertCPTToMatlab(false));
 		}
 
-		QuickFileWriter.writeFile(filePath, output.toString());
+		QuickFileWriter.writeFile(filePath, output.toString(), false);
 	}
 }

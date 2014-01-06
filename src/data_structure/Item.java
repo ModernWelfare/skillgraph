@@ -112,7 +112,7 @@ public class Item extends Node implements Comparable<Item>
 	{
 		boolean returnValue = false;
 
-		if (otherItem == null)
+		if(otherItem == null)
 		{
 			returnValue = false;
 		}
@@ -123,7 +123,6 @@ public class Item extends Node implements Comparable<Item>
 		else if(!(otherItem instanceof Item))
 		{
 			// probably an error
-
 			returnValue = false;
 		}
 		else
@@ -146,7 +145,8 @@ public class Item extends Node implements Comparable<Item>
 	public int compareTo(Item otherItem)
 	{
 		// die if null
-		if (otherItem == null) {
+		if(otherItem == null)
+		{
 			System.err.println("Trying to compare to a null item");
 			System.exit(-1);
 		}

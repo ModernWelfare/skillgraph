@@ -10,7 +10,8 @@ import java.util.List;
  * @author Douglas Selent
  *
  */
-public class Skill extends Node implements Comparable<Skill> {
+public class Skill extends Node implements Comparable<Skill>
+{
 
 	private List<Skill> children;
 	private List<Skill> parents;
@@ -21,6 +22,8 @@ public class Skill extends Node implements Comparable<Skill> {
 	 * 
 	 * @param ix
 	 *            the index of the skill
+	 * @param nx
+	 *            the index of the node
 	 * @param n
 	 *            the name of the skill
 	 */
@@ -54,11 +57,13 @@ public class Skill extends Node implements Comparable<Skill> {
 	// child related functions
 
 	// do not use the set function yet
-	public void setChild(int childIndex, Skill childSkill) {
+	public void setChild(int childIndex, Skill childSkill)
+	{
 		children.set(childIndex, childSkill);
 	}
 
-	public Skill getChild(int childIndex) {
+	public Skill getChild(int childIndex)
+	{
 		return children.get(childIndex);
 	}
 
@@ -86,8 +91,9 @@ public class Skill extends Node implements Comparable<Skill> {
 	 * 
 	 * @param childSkill
 	 */
-	public void addChildAndChildParent(Skill childSkill) {
-		if (children.contains(childSkill))
+	public void addChildAndChildParent(Skill childSkill)
+	{
+		if(children.contains(childSkill))
 		{
 			System.err.println("Trying to add a child that is already there");
 			System.err.println(name + " " + childSkill.getName());
@@ -100,7 +106,8 @@ public class Skill extends Node implements Comparable<Skill> {
 
 	// remove child skill from children list
 	// remove parent skill of the child from the child's parent list
-	public Skill removeChildAndChildParent(int childIndex) {
+	public Skill removeChildAndChildParent(int childIndex)
+	{
 		Skill childSkill = children.remove(childIndex);
 		childSkill.removeParent(this);
 
@@ -111,7 +118,7 @@ public class Skill extends Node implements Comparable<Skill> {
 	// remove parent skill of the child from the child's parent list
 	public Skill removeChildAndChildParent(Skill childSkill)
 	{
-		if (!children.contains(childSkill))
+		if(!children.contains(childSkill))
 		{
 			System.err.println("Trying to remove a child that is not there");
 			System.err.println(name + " " + childSkill.getName());
@@ -124,14 +131,15 @@ public class Skill extends Node implements Comparable<Skill> {
 		return childSkill;
 	}
 
-	public Skill removeChild(int childIndex) {
+	public Skill removeChild(int childIndex)
+	{
 		Skill childSkill = children.remove(childIndex);
 		return childSkill;
 	}
 
 	public Skill removeChild(Skill childSkill)
 	{
-		if (!children.contains(childSkill))
+		if(!children.contains(childSkill))
 		{
 			System.err.println("Trying to remove a child that is not there");
 			System.err.println(name + " " + childSkill.getName());
@@ -142,18 +150,21 @@ public class Skill extends Node implements Comparable<Skill> {
 		return childSkill;
 	}
 
-	public List<Skill> getChildren() {
+	public List<Skill> getChildren()
+	{
 		return children;
 	}
 
 	// parent related functions
 
 	// do not use the set function yet
-	public void setParent(int parentIndex, Skill parentSkill) {
+	public void setParent(int parentIndex, Skill parentSkill)
+	{
 		parents.set(parentIndex, parentSkill);
 	}
 
-	public Skill getParent(int parentIndex) {
+	public Skill getParent(int parentIndex)
+	{
 		return parents.get(parentIndex);
 	}
 
@@ -164,7 +175,7 @@ public class Skill extends Node implements Comparable<Skill> {
 
 	public void addParent(Skill parentSkill)
 	{
-		if (parents.contains(parentSkill))
+		if(parents.contains(parentSkill))
 		{
 			System.err.println("Trying to add a parent that is already there");
 			System.err.println(name + " " + parentSkill.getName());
@@ -176,7 +187,7 @@ public class Skill extends Node implements Comparable<Skill> {
 
 	public void addParentAndParentChild(Skill parentSkill)
 	{
-		if (parents.contains(parentSkill))
+		if(parents.contains(parentSkill))
 		{
 			System.err.println("Trying to add a parent that is already there");
 			System.err.println(name + " " + parentSkill.getName());
@@ -197,7 +208,7 @@ public class Skill extends Node implements Comparable<Skill> {
 
 	public Skill removeParentAndParentChild(Skill parentSkill)
 	{
-		if (!parents.contains(parentSkill))
+		if(!parents.contains(parentSkill))
 		{
 			System.err.println("Trying to remove a parent that is not there");
 			System.err.println(name + " " + parentSkill.getName());
@@ -229,7 +240,8 @@ public class Skill extends Node implements Comparable<Skill> {
 		return parentSkill;
 	}
 
-	public List<Skill> getParents() {
+	public List<Skill> getParents()
+	{
 		return parents;
 	}
 
@@ -245,11 +257,13 @@ public class Skill extends Node implements Comparable<Skill> {
 
 	// item related functions
 
-	public void setItem(int itemIndex, Item item) {
+	public void setItem(int itemIndex, Item item)
+	{
 		items.set(itemIndex, item);
 	}
 
-	public Item getItem(int itemIndex) {
+	public Item getItem(int itemIndex)
+	{
 		return items.get(itemIndex);
 	}
 
@@ -260,14 +274,17 @@ public class Skill extends Node implements Comparable<Skill> {
 
 	// assumed an item can have only 1 parent
 	// break assumption at own risk
-	public void addItem(Item item) {
-		if (!items.contains(item)) {
+	public void addItem(Item item)
+	{
+		if(!items.contains(item))
+		{
 			items.add(item);
 			item.setParent(this);
 		}
 	}
 
-	public Item removeItem(int itemIndex) {
+	public Item removeItem(int itemIndex)
+	{
 		Item item = items.remove(itemIndex);
 		item.setParent(null);
 		return item;
@@ -288,7 +305,8 @@ public class Skill extends Node implements Comparable<Skill> {
 		return item;
 	}
 
-	public List<Item> getItems() {
+	public List<Item> getItems()
+	{
 		return items;
 	}
 

@@ -1,29 +1,28 @@
-package data_structure;
+package main;
 
 import java.awt.Point;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import util.Constants;
-import util.FileReader;
-import util.GraphFunctions;
-import util.MatlabFileWriter;
-import util.QuickFileWriter;
-import util.RandomGraphGenerator;
+import data_storage.ResultStorage;
+import data_structure.*;
+import util.*;
 
 //guess + slip setting is designed wrong but will work for now
-//still need to store best overall graph and see if it is the same as original
-
+//results should be set after graph creation by getting all graph information from the graph
 public class MainProgram
 {
 	private static int bestGraphIndex;
+	private static double bestRMSE;
 	private static int numberOfStudents;
+	private static SkillGraph originalGraph;
+	private static SkillGraph bestGraph;
 
 	//original graph indices
 	private static int graphIndex;
 
-	private static void runSearch(String graphName, int[] graphParameters, int numberOfFakeSkills)
+	private static void runSearch(String graphName, int[] graphParameters, int numberOfFakeSkills, ResultStorage results)
 	{
 		QuickFileWriter.createFolder(graphName);
 
@@ -40,6 +39,11 @@ public class MainProgram
 
 		GraphFunctions.outputMathematicaGraphs(graph, graphName + File.separator + originalPath + File.separator);
 		MatlabFileWriter.outputSkillGraphMatlabFile(graph, getGraphIndex(), "currentDag.m", getNumberOfStudents());
+
+		setOriginalSkillGraph(graph);
+
+		int levels = GraphFunctions.getNumberOfLevels(graph.generateSkillMatrix());
+		results.setNumberOfLevels(levels);
 
 		//generate data for real graph
 
@@ -104,6 +108,36 @@ public class MainProgram
 		return graphIndex;
 	}
 
+	private static void setBestRMSE(double rmse)
+	{
+		bestRMSE = rmse;
+	}
+
+	private static double getBestRMSE()
+	{
+		return bestRMSE;
+	}
+
+	private static void setOriginalSkillGraph(SkillGraph graph)
+	{
+		originalGraph = graph;
+	}
+
+	private static SkillGraph getOriginalSkillGraph()
+	{
+		return originalGraph;
+	}
+
+	private static void setBestSkillGraph(SkillGraph graph)
+	{
+		bestGraph = graph;
+	}
+
+	private static SkillGraph getBestSkillGraph()
+	{
+		return bestGraph;
+	}
+
 	/**
 	 * selects the best merged graph given a graph
 	 * 
@@ -145,7 +179,7 @@ public class MainProgram
 				iterationIndex++;
 			}
 
-			selectedIndex = selectBestResultIndex(matlabResults);
+			selectedIndex = selectBestResultIndex(matlabResults, mergedGraphs);
 			printResults(iterationDir, matlabResults, selectedIndex);
 
 			bestGraph = mergedGraphs.get(selectedIndex);
@@ -167,7 +201,7 @@ public class MainProgram
 		}
 
 		sb.append("Selected index: " + Integer.toString(selectedIndex));
-		QuickFileWriter.writeFile(filePath, sb.toString());
+		QuickFileWriter.writeFile(filePath, sb.toString(), false);
 	}
 
 	/**
@@ -177,7 +211,7 @@ public class MainProgram
 	 *            a list of strings of matlab results
 	 * @return the index of the best result string
 	 */
-	private static int selectBestResultIndex(List<String> matlabResults)
+	private static int selectBestResultIndex(List<String> matlabResults, List<SkillGraph> graphList)
 	{
 		int minIndex = 0;
 		String firstResult = matlabResults.get(0);
@@ -192,6 +226,12 @@ public class MainProgram
 			{
 				smallestRMSE = rmse;
 				minIndex = i;
+
+				if(smallestRMSE <= bestRMSE)
+				{
+					bestRMSE = smallestRMSE;
+					setBestSkillGraph(graphList.get(i));
+				}
 			}
 		}
 
@@ -218,7 +258,7 @@ public class MainProgram
 
 			/*
 			// run the matlab command on a new process
-			Process p = Runtime.getRuntime().exec(Constants.MATLAB_PATH +
+			Process p = Runtime.getRuntime().exec(Globals.getMatlabPath() +
 					"matlab -nodisplay -wait -nosplash -nodesktop -r \"cd bnt; "
 							+ "addpath(genpathKPM(pwd)); "
 							+ "cd ../matlab_scripts; "
@@ -228,7 +268,7 @@ public class MainProgram
 
 
 
-			Process p = Runtime.getRuntime().exec(Constants.MATLAB_PATH +
+			Process p = Runtime.getRuntime().exec(Globals.getMatlabPath() +
 					"matlab -nodisplay -wait -nosplash -nodesktop -r \" "
 							+ "cd matlab_scripts; "
 							+ "run CreateDLMObject; " + "run Evaluation1; "
@@ -271,7 +311,7 @@ public class MainProgram
 	{
 		try
 		{
-			Process p = Runtime.getRuntime().exec(Constants.MATLAB_PATH +
+			Process p = Runtime.getRuntime().exec(Globals.getMatlabPath() +
 					"matlab -nodisplay -wait -nosplash -nodesktop -r \" "
 							+ "cd matlab_scripts; "
 							+ "run GenerateDataFromDag; "
@@ -308,17 +348,39 @@ public class MainProgram
 
 	public static void main(String args[])
 	{
-		bestGraphIndex = -1;
-		numberOfStudents = 50;
+
 		graphIndex = 0;
+		Globals.setMatlabPath("C:\\Program Files\\MATLAB\\R2012a\\bin\\");
+		Globals.setRandomSeed(4);
+
+
+
+		bestGraphIndex = -1;
+		bestRMSE = 9999;
+		numberOfStudents = 50;
+		Globals.setMinGuess(0.1);
+		Globals.setMaxGuess(0.3);
+		Globals.setMinSlip(0.05);
+		Globals.setMaxSlip(0.1);
+
+		ResultStorage results = new ResultStorage();
+
 		
 		//skill lower/upper, item lower/upper, level lower/upper
 		int[] graphParameters = { 2, 3, 2, 3, 1, 3 };
 		String graphName = "test_graph";
 		int numberOfFakeSkills = 1;
 
-		runSearch(graphName, graphParameters, numberOfFakeSkills);
-		
+		runSearch(graphName, graphParameters, numberOfFakeSkills, results);
+
+		boolean learnedBack = originalGraph.compareGraph(bestGraph);
+
+		results.setBestRMSE(getBestRMSE());
+		results.setLearnedBack(learnedBack);
+
+		QuickFileWriter.writeFile("results.csv", results.toString(), true);
+
+
 		/*
 
 		int studentArray[] = {50, 100, 150, 200};
@@ -357,10 +419,10 @@ public class MainProgram
 						double slip = slipArray[l];
 
 						//this will work, but is not correct way
-						Constants.MIN_GUESS = guess;
-						Constants.MAX_GUESS = guess;
-						Constants.MIN_SLIP = slip;
-						Constants.MAX_SLIP = slip;						
+						Globals.setMinGuess(guess);
+						Globals.setMaxGuess(guess);
+						Globals.setMinSlip(slip);
+						Globals.setMaxSlip(slip);						
 
 						for(int m=0; m<numberOfFakeSkills.length; m++)
 						{
@@ -368,6 +430,9 @@ public class MainProgram
 
 							if(items-fakeSkills > 0)
 							{
+								bestGraphIndex = -1;
+								bestRMSE = 9999;
+
 								int lowerLevel = 2;
 								int upperLevel = skills;
 
@@ -404,7 +469,31 @@ public class MainProgram
 
 								String graphName = sb.toString();
 
-								runSearch(graphName, graphParameters, fakeSkills);
+								//
+
+								ResultStorage results = new ResultStorage();
+								
+								results.setUID(graphIndex);
+								results.setNumberOfStudents(students);
+								results.setNumberOfItems(items);
+								results.setNumberOfRealSkills(skills);
+
+								//needs to be set when graph is generated
+								//results.setNumberOfLevels();
+
+								results.setGuessValue(guess);
+								results.setSlipValue(slip);
+								results.setNumberOfFakeSkills(fakeSkills);
+
+
+								runSearch(graphName, graphParameters, fakeSkills, results);
+
+								boolean learnedBack = originalGraph.compareGraph(bestGraph);
+
+								results.setBestRMSE(getBestRMSE());
+								results.setLearnedBack(learnedBack);
+
+								QuickFileWriter.writeFile("results.csv", results.toString(), true);
 								graphIndex++;
 							}
 						}
