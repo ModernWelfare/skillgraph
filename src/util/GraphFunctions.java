@@ -432,10 +432,10 @@ public class GraphFunctions
 
 		for (int i=0; i<numberOfItems; i++)
 		{
-			String minGuess = Double.toString(Constants.MIN_GUESS);
-			String maxGuess = Double.toString(Constants.MAX_GUESS);
-			String minSlip = Double.toString(Constants.MIN_SLIP);
-			String maxSlip = Double.toString(Constants.MAX_SLIP);
+			String minGuess = Double.toString(Globals.getMinGuess());
+			String maxGuess = Double.toString(Globals.getMaxGuess());
+			String minSlip = Double.toString(Globals.getMinSlip());
+			String maxSlip = Double.toString(Globals.getMaxSlip());
 
 			sb.append(minGuess);
 			sb.append("-");

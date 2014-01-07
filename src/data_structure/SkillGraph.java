@@ -912,8 +912,9 @@ public class SkillGraph
 								int endIndex = skillNames[j].indexOf("z");
 								String realSkill1 = skillNames[j].substring(0, endIndex);
 
-								if(!realSkill.equals("realSkill1"))
+								if(!realSkill.equals(realSkill1))
 								{
+
 									returnValue = false;
 								}
 							}

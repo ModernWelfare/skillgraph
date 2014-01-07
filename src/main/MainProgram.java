@@ -38,9 +38,9 @@ public class MainProgram
 				graphName + File.separator + originalPath + File.separator + "GuessAndSlipRanges.csv");
 
 		GraphFunctions.outputMathematicaGraphs(graph, graphName + File.separator + originalPath + File.separator);
-		MatlabFileWriter.outputSkillGraphMatlabFile(graph, getGraphIndex(), "currentDag.m", getNumberOfStudents());
+		MatlabFileWriter.outputSkillGraphMatlabFile(graph, getGraphIndex(), "currentDag.m", getNumberOfStudents(), true);
 
-		setOriginalSkillGraph(graph);
+		setOriginalSkillGraph(new SkillGraph(graph));
 
 		int levels = GraphFunctions.getNumberOfLevels(graph.generateSkillMatrix());
 		results.setNumberOfLevels(levels);
@@ -57,7 +57,7 @@ public class MainProgram
 		}
 
 		GraphFunctions.generateGraphFiles(graph, graphName + File.separator + "fake_graph");
-		MatlabFileWriter.outputSkillGraphMatlabFile(graph, getGraphIndex(), "currentDag.m", getNumberOfStudents());
+		MatlabFileWriter.outputSkillGraphMatlabFile(graph, getGraphIndex(), "currentDag.m", getNumberOfStudents(), false);
 
 		//run search on fake graph
 
@@ -251,7 +251,7 @@ public class MainProgram
 	private static String getGraphEvaluationResults(SkillGraph graph, int iterationIndex, String iterationDir)
 	{
 		String returnString = "";
-		MatlabFileWriter.outputSkillGraphMatlabFile(graph, getGraphIndex(), "currentDag.m", getNumberOfStudents());
+		MatlabFileWriter.outputSkillGraphMatlabFile(graph, getGraphIndex(), "currentDag.m", getNumberOfStudents(), false);
 
 		try
 		{
@@ -351,10 +351,10 @@ public class MainProgram
 
 		graphIndex = 0;
 		Globals.setMatlabPath("C:\\Program Files\\MATLAB\\R2012a\\bin\\");
-		Globals.setRandomSeed(4);
+		Globals.setRandomSeed(3);
 
 
-
+		/*
 		bestGraphIndex = -1;
 		bestRMSE = 9999;
 		numberOfStudents = 50;
@@ -367,7 +367,7 @@ public class MainProgram
 
 		
 		//skill lower/upper, item lower/upper, level lower/upper
-		int[] graphParameters = { 2, 3, 2, 3, 1, 3 };
+		int[] graphParameters = { 2, 6, 2, 3, 1, 3 };
 		String graphName = "test_graph";
 		int numberOfFakeSkills = 1;
 
@@ -379,9 +379,9 @@ public class MainProgram
 		results.setLearnedBack(learnedBack);
 
 		QuickFileWriter.writeFile("results.csv", results.toString(), true);
+		*/
 
-
-		/*
+		
 
 		int studentArray[] = {50, 100, 150, 200};
 		int itemArray[] = {2, 4, 6, 8};
@@ -501,8 +501,6 @@ public class MainProgram
 				}
 			}
 		}
-
-		*/
 
 	}
 

@@ -19,7 +19,7 @@ public class MatlabFileWriter
 {
 	private final static String OUTPUT_DIR = "matlab_scripts";
 
-	public static void outputSkillGraphMatlabFile(SkillGraph graph, int graphNumber, String fileName, int numberOfStudents)
+	public static void outputSkillGraphMatlabFile(SkillGraph graph, int graphNumber, String fileName, int numberOfStudents, boolean outputCPT)
 	{
 		// set up the directory and the filePath
 		QuickFileWriter.createFolder(OUTPUT_DIR);
@@ -144,26 +144,31 @@ public class MatlabFileWriter
 		// make the bayes net
 		output.append("bnet = mk_bnet(dag,node_sizes,'discrete',discrete_nodes,'observed',obs,'equiv_class',eclass);\n");
 
-		// output the cpt table
-		for(Skill s : graph.getSkillList())
+		if(outputCPT)
 		{
-			output.append(s.convertCPTToMatlab(false));
+			// output the cpt table
+			for(Skill s : graph.getSkillList())
+			{
+				output.append(s.convertCPTToMatlab(false));
+			}
+
+			for(Guess g : graph.getGuessList())
+			{
+				output.append(g.convertCPTToMatlab(false));
+			}
+
+			for(Slip s : graph.getSlipList())
+			{
+				output.append(s.convertCPTToMatlab(false));
+			}
+		
+
+			for(Item i : graph.getItemList())
+			{
+				output.append(i.convertCPTToMatlab(false));
+			}
 		}
 
-		for(Guess g : graph.getGuessList())
-		{
-			output.append(g.convertCPTToMatlab(false));
-		}
-
-		for(Slip s : graph.getSlipList())
-		{
-			output.append(s.convertCPTToMatlab(false));
-		}
-
-		for(Item i : graph.getItemList())
-		{
-			output.append(i.convertCPTToMatlab(false));
-		}
 
 		QuickFileWriter.writeFile(filePath, output.toString(), false);
 	}
