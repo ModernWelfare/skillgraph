@@ -493,7 +493,7 @@ public class MainProgram
 								results.setBestRMSE(getBestRMSE());
 								results.setLearnedBack(learnedBack);
 
-								QuickFileWriter.writeFile("results.csv", results.toString(), true);
+								QuickFileWriter.writeFile("results.csv", results.toString()+"\n", true);
 								graphIndex++;
 							}
 						}

@@ -67,7 +67,7 @@ public class ResultStorage
 		slipValue = sv;
 	}
 
-	public void setNumberOfFakeskills(int nofs)
+	public void setNumberOfFakeSkills(int nofs)
 	{
 		numberOfFakeSkills = nofs;
 	}
