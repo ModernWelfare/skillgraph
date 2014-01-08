@@ -663,9 +663,10 @@ public class SkillGraph
 		newSkill.setName(oldSkill.getName() + "zsplitz" + newSkill.getIndex());
 
 		// Split the items up between the two skills
-		for(int i = 0; i < cutPoint; i++)
+		for(int i=0; i<cutPoint; i++)
 		{
-			newSkill.addItem(oldSkill.removeItem(i));
+			//keep removing the first item
+			newSkill.addItem(oldSkill.removeItem(0));
 		}
 		
 		//Determine attachment point.
