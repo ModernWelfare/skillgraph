@@ -29,12 +29,18 @@ public class MainProgram
 		//output original graph
 
 		String originalPath = "ground_truth";
-		RandomGraphGenerator.generateRandomGraph(graphParameters, graphName + File.separator + originalPath);
+		String outputPath = graphName + File.separator + originalPath;
+
+		//need the cpt template file
+		//here for now
+		String inputPath = "Example" + File.separator + "CPT_Ranges1.csv";
+
+		RandomGraphGenerator.generateRandomGraph(graphParameters, inputPath, outputPath);
 
 		SkillGraph graph = new SkillGraph(
 				graphName + File.separator + originalPath + File.separator + "SkillGraph.csv",
 				graphName + File.separator + originalPath + File.separator + "ItemToSkillMapping.csv",
-				"Example" + File.separator + "CPT_Ranges1.csv",
+				graphName + File.separator + originalPath + File.separator + "CPT_Ranges.csv",
 				graphName + File.separator + originalPath + File.separator + "GuessAndSlipRanges.csv");
 
 		GraphFunctions.outputMathematicaGraphs(graph, graphName + File.separator + originalPath + File.separator);
@@ -350,7 +356,7 @@ public class MainProgram
 	{
 
 		graphIndex = 0;
-		Globals.setMatlabPath("C:\\Program Files\\MATLAB\\R2012a\\bin\\");
+		Globals.setMatlabPath("C:\\Program Files\\MATLAB2\\R2012a\\bin\\");
 		Globals.setRandomSeed(3);
 
 

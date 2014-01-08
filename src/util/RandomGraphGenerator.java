@@ -28,7 +28,7 @@ public class RandomGraphGenerator
 	 * @param itemNumUpperBound
 	 *            the upper bound of the number of items tied to each skill
 	 */
-	public static void generateRandomGraph(int[] parameters, String outputFolderPath)
+	public static void generateRandomGraph(int[] parameters, String cptSource, String outputFolderPath)
 	{
 		if(!checkParameterBounds(parameters))
 		{
@@ -64,7 +64,7 @@ public class RandomGraphGenerator
 
 		File dir = new File(outputFolderPath);
 
-		if (!dir.exists())
+		if(!dir.exists())
 		{
 			dir.mkdir();
 		}
@@ -72,10 +72,12 @@ public class RandomGraphGenerator
 		String skillPath = outputFolderPath + File.separator + "SkillGraph.csv";
 		String itemToSkillMappingPath = outputFolderPath + File.separator + "ItemToSkillMapping.csv";
 		String guessSlipPath = outputFolderPath + File.separator + "GuessAndSlipRanges.csv";
+		String cptPath = outputFolderPath + File.separator + "CPT_Ranges.csv";
 
 		GraphFunctions.outputSkillMatrix(skillMatrix, skillPath);
 		GraphFunctions.outputItemToSkillMapping(itemNum, itemToSkillMappingPath);
 		GraphFunctions.outputGuessAndSlipFile(totalItemNum, guessSlipPath);
+		GraphFunctions.outputCPTRanges(cptSource, cptPath);
 	}
 
 	private static boolean checkParameterBounds(final int[] parameters)

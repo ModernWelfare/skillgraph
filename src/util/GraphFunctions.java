@@ -491,6 +491,11 @@ public class GraphFunctions
 		QuickFileWriter.writeFile(path6, outputString6, false);
 	}
 
+	public static void outputCPTRanges(String source, String destination)
+	{
+		QuickFileWriter.copyFile(source, destination);
+	}
+
 	public static void printSkillMatrix(int[][] skillMatrix)
 	{
 		for (int i=0; i<skillMatrix.length; i++)
