@@ -613,10 +613,42 @@ public class SkillGraph
 
 	public void generateFakeSkill()
 	{
-		// If no skill is selected, the skill is selected at random.
-		int oldSkillID = ConstantRNG.getNextInt(0, getSkillList().size()-1);
-		Skill oldSkill = getSkill(oldSkillID);
-		generateFakeSkill(oldSkill);
+		boolean hasSplittable = false;
+
+		for(int i=0; i<getNumberOfSkills() && !hasSplittable; i++)
+		{
+			Skill sk = getSkill(i);
+
+			if(sk.getNumberOfItems() > 1)
+			{
+				hasSplittable = true;
+			}
+		}
+
+		if(!hasSplittable)
+		{
+			System.err.println("Not enough items to split any skill");
+			System.exit(-1);
+		}
+		else
+		{
+			boolean splittable = false;
+
+			//since we don't want this to error out we should keep trying
+			//logic above guarentees a splittable skill
+			while(!splittable)
+			{
+				// If no skill is selected, the skill is selected at random.
+				int oldSkillID = ConstantRNG.getNextInt(0, getNumberOfSkills()-1);
+				Skill oldSkill = getSkill(oldSkillID);
+
+				if(oldSkill.getNumberOfItems() > 1)
+				{
+					generateFakeSkill(oldSkill);
+					splittable = true;
+				}
+			}
+		}
 	}
 
 	// know skill but not cut point
