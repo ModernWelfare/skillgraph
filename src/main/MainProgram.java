@@ -414,7 +414,7 @@ public class MainProgram
 		//k < 2
 
 		//student indices
-		for(int i=1; i<2studentArray.length; i++)
+		for(int i=1; i<studentArray.length; i++)
 		{
 			int students = studentArray[i];
 			setNumberOfStudents(students);
