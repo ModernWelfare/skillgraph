@@ -68,6 +68,7 @@ public class ConstantRNG
 	 * @param upperBound
 	 * @return
 	 */
+	/*
 	public static double getNextNumberGuassian(double lowerBound, double upperBound)
 	{
 		double randomNumber = getNextNumberRawG();
@@ -76,4 +77,5 @@ public class ConstantRNG
 
 		return randomNumber;
 	}
+	*/
 }

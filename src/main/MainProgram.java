@@ -10,7 +10,7 @@ import data_structure.*;
 import util.*;
 
 //guess + slip setting is designed wrong but will work for now
-//results should be set after graph creation by getting all graph information from the graph
+
 public class MainProgram
 {
 	private static int bestGraphIndex;
@@ -300,7 +300,7 @@ public class MainProgram
 
 			QuickFileWriter.copyFile(source, destination);
 
-			returnString = FileReader.readFile("matlab_scripts" + File.separator + "results.txt").get(0);
+			returnString = QuickFileReader.readFile("matlab_scripts" + File.separator + "results.txt").get(0);
 			return returnString;
 
 		}
@@ -403,8 +403,18 @@ public class MainProgram
 		//only use possible
 		int numberOfFakeSkills[] = {1, 2, 3, 4};
 
+		//i=1,j<2
+		//i=2,j<2
+		//i=3,j<2
+		//i=4,j<2
+		//i=1,j=2
+		//i=2,j=2
+		//i=3,j=2
+		//i=4,j=2
+		//k < 2
+
 		//student indices
-		for(int i=0; i<studentArray.length; i++)
+		for(int i=1; i<2studentArray.length; i++)
 		{
 			int students = studentArray[i];
 			setNumberOfStudents(students);
