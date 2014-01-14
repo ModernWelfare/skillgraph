@@ -33,7 +33,23 @@ for fold=1:5
 
     %test set, opposite of above training set for students
     cases3=cases(dlmObject.folds(:,1,1) == fold, :);
+    
+    studentIndices=zeros(size(cases3,1), 1);
+    indexSpot=1;
+    sizeArray = size(dlmObject.folds(:, 1));
+    for student=1:sizeArray(1)
+        if(dlmObject.folds(student,1,1) == fold)
+            studentIndices(indexSpot) = student;
+            indexSpot=indexSpot+1;
+        end
+    end
+    
+  
+    %student variable goes from 1 - number of students in the fold
+    %student variable is not actually the student number
     for student=1:size(cases3,1)
+   
+    
 	fprintf('%d%% done with fold %d of 5\n',round(student*100/size(cases3,1)),fold);
         %get all items for a given student (c)
         case1=cases3(student,:);
@@ -50,7 +66,7 @@ for fold=1:5
             %for each item, get a 1 if the items is in the fold and the item
             % index if the item index if that item is in the test set.
             for itemNumber=1:size(dlmObject.responses, 2)
-                if(dlmObject.folds(student,itemNumber, 2) ~= ifold)
+                if(dlmObject.folds(studentIndices(student),itemNumber, 2) ~= ifold)
                     evitems(i) = 1;
                 else
                     evitems(i) = 0;
@@ -70,12 +86,15 @@ for fold=1:5
             for t=titems
                 m = marginal_nodes(engine3,bnet.observed(t));
                 m = m.T(2);
-                fprintf(report,'%d %d %d %.5f %d\n',fold,student,t,m,case1{bnet.observed(t)}-1);
+                fprintf(report,'%d %d %d %.5f %d\n',fold,studentIndices(student),t,m,case1{bnet.observed(t)}-1);
             end
         end
+        
+     
+        
     end
 end
-
+save('bnet2.mat', 'bnet');
 fclose(report);
 
 
